@@ -1,5 +1,5 @@
 import { render, screen } from "../testUtils/testUtils";
-import { ResourceComponent } from "./RescourceComponent";
+import { ResourceComponent } from "./ResourceComponent";
 import resources from "../resources.json";
 //An example of using react-testing-library
 describe("MyComponent", async () => {

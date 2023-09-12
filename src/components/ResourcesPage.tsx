@@ -1,5 +1,6 @@
-import { Resource, ResourceComponent } from "./RescourceComponent";
+import { Resource, ResourceComponent } from "./ResourceComponent";
 import resources from "../resources.json";
+import { AddResourceComponent } from "./AddResourceComponent";
 // import { baseURL } from "../config";
 
 export function ResourcesPage() {
@@ -7,6 +8,7 @@ export function ResourcesPage() {
 
     return (
         <div>
+            <AddResourceComponent />
             {resourcesFromJsonFile.map((el) => {
                 return <ResourceComponent key={el.id} resource={el} />;
             })}

@@ -49,7 +49,12 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
             `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
         );
     };
-
+    const likeResource = async () => {
+        await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
+    };
+    const dislikeResource = async () => {
+        await axios.put(`${baseURL}/resources/dislike/${props.resource.id}`);
+    };
     return (
         <Accordion>
             <Card className="resource">
@@ -62,11 +67,23 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                 <Heading>{`by ${props.resource.author_name}`}</Heading>
                 <Text>{props.resource.description}</Text>
                 <Box>
-                    <Button>👍</Button>
+                    <Button
+                        onClick={() => {
+                            likeResource();
+                        }}
+                    >
+                        👍
+                    </Button>
                     <Text>{`Likes ${props.resource.likes_count}`}</Text>
                 </Box>
                 <Box>
-                    <Button>👎</Button>
+                    <Button
+                        onClick={() => {
+                            dislikeResource();
+                        }}
+                    >
+                        👎
+                    </Button>
                     <Text>{`Dislikes ${props.resource.dislikes_count}`}</Text>
                 </Box>
                 {props.showResourcesPage ? (

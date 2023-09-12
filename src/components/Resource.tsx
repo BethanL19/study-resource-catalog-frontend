@@ -12,8 +12,10 @@ import {
     AccordionIcon,
     AccordionPanel,
 } from "@chakra-ui/react";
+import { baseURL } from "../config";
+import axios from "axios";
 
-export interface ResourceComponentProps {
+export interface Resource {
     id: number;
     resource_name: string;
     author_name: string;
@@ -27,39 +29,65 @@ export interface ResourceComponentProps {
     recommender_reason: string;
     likes_count: number;
     dislikes_count: number;
+}
+
+export interface ResourceComponentProps {
+    resource: Resource;
     tags: string[];
+    user_id: number;
+    showResourcesPage: boolean;
 }
 
 export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
-    const handleAddToStudyList = () => {};
+    const addToStudyList = async () => {
+        await axios.post(
+            `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
+        );
+    };
+    const deleteFromStudyList = async () => {
+        await axios.delete(
+            `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
+        );
+    };
 
     return (
         <Accordion>
             <Card className="resource">
-                <Heading>{props.resource_name}</Heading>
-                <Link href={props.url} isExternal>
+                <Heading>{props.resource.resource_name}</Heading>
+                <Link href={props.resource.url} isExternal>
                     link <ExternalLinkIcon mx="1vw" />
                 </Link>
-                <Heading>{`added by: ${props.recommender_id}`}</Heading>
+                <Heading>{`added by: ${props.resource.recommender_id}`}</Heading>
                 {/* ^^this needs to be changed to get the user's name */}
-                <Heading>{`by ${props.author_name}`}</Heading>
-                <Text>{props.description}</Text>
+                <Heading>{`by ${props.resource.author_name}`}</Heading>
+                <Text>{props.resource.description}</Text>
                 <Box>
                     <Button>👍</Button>
-                    <Text>{`Likes ${props.likes_count}`}</Text>
+                    <Text>{`Likes ${props.resource.likes_count}`}</Text>
                 </Box>
                 <Box>
                     <Button>👎</Button>
-                    <Text>{`Dislikes ${props.dislikes_count}`}</Text>
+                    <Text>{`Dislikes ${props.resource.dislikes_count}`}</Text>
                 </Box>
-                <Button
-                    colorScheme="teal"
-                    onClick={() => {
-                        handleAddToStudyList();
-                    }}
-                >
-                    Add to my study list
-                </Button>
+                {props.showResourcesPage ? (
+                    <Button
+                        colorScheme="teal"
+                        onClick={() => {
+                            addToStudyList();
+                        }}
+                    >
+                        Add to my study list
+                    </Button>
+                ) : (
+                    <Button
+                        colorScheme="pink"
+                        onClick={() => {
+                            deleteFromStudyList();
+                        }}
+                    >
+                        Remove from my study list
+                    </Button>
+                )}
                 <div className="tags">
                     {props.tags.map((tag, index) => (
                         <Button key={index}>{tag}</Button>
@@ -72,11 +100,11 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                     <AccordionIcon />
                 </AccordionButton>
                 <AccordionPanel>
-                    {`date added: ${props.date_added}`}
-                    {`recommender comment: ${props.recommender_comment}`}
-                    {`recommender reason: ${props.recommender_reason}`}
-                    {`content type: ${props.content_type}`}
-                    {`recommended for week: ${props.build_phase}`}
+                    {`date added: ${props.resource.date_added}`}
+                    {`recommender comment: ${props.resource.recommender_comment}`}
+                    {`recommender reason: ${props.resource.recommender_reason}`}
+                    {`content type: ${props.resource.content_type}`}
+                    {`recommended for week: ${props.resource.build_phase}`}
                 </AccordionPanel>
             </AccordionItem>
         </Accordion>

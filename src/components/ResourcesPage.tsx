@@ -1,5 +1,6 @@
 import { Resource, ResourceComponent } from "./RescourceComponent";
 import resources from "../resources.json";
+import { baseURL } from "../config";
 
 export function ResourcesPage() {
     const resourcesFromJsonFile: Resource[] = resources.resources;

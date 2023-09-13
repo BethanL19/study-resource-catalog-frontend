@@ -75,6 +75,14 @@ export function AddResourceComponent(): JSX.Element {
                 duration: 2000,
                 isClosable: true,
             });
+            setResourceName("");
+            setAuthorName("");
+            setUrl("");
+            setDescription("");
+            setContentType("");
+            setBuildPhase("");
+            setComment("I recommend this resource after having used it");
+            setReason("");
         } catch (error) {
             console.error(error);
         }
@@ -119,24 +127,12 @@ export function AddResourceComponent(): JSX.Element {
             callback: (event) => setDescription(event.target.value),
             isRequired: true,
         },
-        // {
-        //     title: "Content type",
-        //     value: contentType,
-        //     callback: (event) => setContentType(event.target.value),
-        //     isRequired: true,
-        // },
         {
             title: "Build phase",
             value: buildPhase,
             callback: (event) => setBuildPhase(event.target.value),
             isRequired: true,
         },
-        // {
-        //     title: "Comment",
-        //     value: comment,
-        //     callback: (event) => setComment(event.target.value),
-        //     isRequired: true,
-        // },
         {
             title: "Reason",
             value: reason,

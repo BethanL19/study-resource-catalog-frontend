@@ -1,3 +1,4 @@
+
 import { Resource, ResourceComponent } from "./Resource";
 import { useEffect, useState } from "react";
 import { baseURL } from "../config";
@@ -35,4 +36,5 @@ export function ResourcesPage() {
         />
     ));
     return <div>{resourcesForRender}</div>;
+
 }

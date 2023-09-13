@@ -2,6 +2,7 @@ import { Resource, ResourceComponent } from "./Resource";
 import { useEffect, useState } from "react";
 import { baseURL } from "../config";
 import axios from "axios";
+import { AddResourceComponent } from "./AddResourceComponent";
 
 export function ResourcesPage() {
     const [resources, setResources] = useState<Resource[]>([]);
@@ -34,5 +35,10 @@ export function ResourcesPage() {
             showResourcesPage={showResourcesPage}
         />
     ));
-    return <div>{resourcesForRender}</div>;
+    return (
+        <div>
+            <AddResourceComponent />
+            {resourcesForRender}
+        </div>
+    );
 }

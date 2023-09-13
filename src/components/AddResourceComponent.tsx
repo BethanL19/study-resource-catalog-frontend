@@ -21,8 +21,16 @@ import {
 import axios from "axios";
 import { useState } from "react";
 import { baseURL } from "../config";
+import { getResources } from "../utils/getResources";
+import { Resource } from "./Resource";
 
-export function AddResourceComponent(): JSX.Element {
+interface AddResourceComponentProps {
+    setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
+}
+
+export function AddResourceComponent({
+    setResources,
+}: AddResourceComponentProps): JSX.Element {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [resourceName, setResourceName] = useState("");
     const [authorName, setAuthorName] = useState("");
@@ -83,6 +91,8 @@ export function AddResourceComponent(): JSX.Element {
             setBuildPhase("");
             setComment("I recommend this resource after having used it");
             setReason("");
+
+            getResources(setResources);
         } catch (error) {
             console.error(error);
         }

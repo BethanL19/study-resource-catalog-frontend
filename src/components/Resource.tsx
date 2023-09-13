@@ -14,6 +14,8 @@ import {
 } from "@chakra-ui/react";
 import { baseURL } from "../config";
 import axios from "axios";
+import { useState } from "react";
+import { getResources } from "../utils/getResources";
 
 export interface Resource {
     id: number;
@@ -36,9 +38,11 @@ export interface ResourceComponentProps {
     tags: string[];
     user_id: number;
     showResourcesPage: boolean;
+    setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
 }
 
 export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
+    const [recName, setRecName] = useState("");
     const addToStudyList = async () => {
         await axios.post(
             `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
@@ -51,10 +55,19 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
     };
     const likeResource = async () => {
         await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
+        getResources(props.setResources);
     };
     const dislikeResource = async () => {
         await axios.put(`${baseURL}/resources/dislike/${props.resource.id}`);
+        getResources(props.setResources);
     };
+    const getName = async () => {
+        const response = await axios.get(
+            `${baseURL}/user/${props.resource.id}`
+        );
+        setRecName(response.data[0].name);
+    };
+    getName();
     return (
         <Accordion>
             <Card className="resource">
@@ -62,8 +75,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                 <Link href={props.resource.url} isExternal>
                     link <ExternalLinkIcon mx="1vw" />
                 </Link>
-                <Heading>{`added by: ${props.resource.recommender_id}`}</Heading>
-                {/* ^^this needs to be changed to get the user's name */}
+                <Heading>{`added by: ${recName}`}</Heading>
                 <Heading>{`by ${props.resource.author_name}`}</Heading>
                 <Text>{props.resource.description}</Text>
                 <Box>

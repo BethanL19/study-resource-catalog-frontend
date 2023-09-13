@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { baseURL } from "../config";
 import axios from "axios";
 import { AddResourceComponent } from "./AddResourceComponent";
+import { getResources } from "../utils/getResources";
 
 export function ResourcesPage() {
     const [resources, setResources] = useState<Resource[]>([]);
@@ -11,11 +12,7 @@ export function ResourcesPage() {
     const [showResourcesPage, _setShowResourcesPage] = useState<boolean>(true);
 
     useEffect(() => {
-        async function getResources() {
-            const response = await axios.get(`${baseURL}/resources`);
-            setResources(response.data);
-        }
-        getResources();
+        getResources(setResources);
     }, []);
 
     useEffect(() => {
@@ -33,6 +30,7 @@ export function ResourcesPage() {
             tags={tags}
             user_id={userId}
             showResourcesPage={showResourcesPage}
+            setResources={setResources}
         />
     ));
     return (

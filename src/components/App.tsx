@@ -1,12 +1,12 @@
-import { MyComponent } from "./MyComponent";
 import "./App.css";
+import { ResourcesPage } from "./ResourcesPage";
+import { ChakraProvider } from "@chakra-ui/react";
 
 function App() {
     return (
-        <div className="App">
-            <MyComponent />
-        </div>
+        <ChakraProvider>
+            <ResourcesPage />;
+        </ChakraProvider>
     );
 }
-
 export default App;

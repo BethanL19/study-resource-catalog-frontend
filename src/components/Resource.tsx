@@ -1,7 +1,6 @@
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
     Box,
-    Card,
     Heading,
     Button,
     Link,
@@ -11,9 +10,13 @@ import {
     AccordionButton,
     AccordionIcon,
     AccordionPanel,
+    UnorderedList,
+    ListItem,
 } from "@chakra-ui/react";
 import { baseURL } from "../config";
 import axios from "axios";
+import { useState } from "react";
+import { getResources } from "../utils/getResources";
 
 export interface Resource {
     id: number;
@@ -36,9 +39,11 @@ export interface ResourceComponentProps {
     tags: string[];
     user_id: number;
     showResourcesPage: boolean;
+    setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
 }
 
 export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
+    const [recName, setRecName] = useState("");
     const addToStudyList = async () => {
         await axios.post(
             `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
@@ -51,77 +56,100 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
     };
     const likeResource = async () => {
         await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
+        getResources(props.setResources);
     };
     const dislikeResource = async () => {
         await axios.put(`${baseURL}/resources/dislike/${props.resource.id}`);
+        getResources(props.setResources);
     };
+    const getName = async () => {
+        const response = await axios.get(
+            `${baseURL}/user/${props.resource.id}`
+        );
+        setRecName(response.data[0].name);
+    };
+    getName();
     return (
-        <Accordion>
-            <Card className="resource">
-                <Heading>{props.resource.resource_name}</Heading>
-                <Link href={props.resource.url} isExternal>
-                    link <ExternalLinkIcon mx="1vw" />
-                </Link>
-                <Heading>{`added by: ${props.resource.recommender_id}`}</Heading>
-                {/* ^^this needs to be changed to get the user's name */}
-                <Heading>{`by ${props.resource.author_name}`}</Heading>
-                <Text>{props.resource.description}</Text>
-                <Box>
-                    <Button
-                        onClick={() => {
-                            likeResource();
-                        }}
-                    >
-                        👍
-                    </Button>
-                    <Text>{`Likes ${props.resource.likes_count}`}</Text>
+        <Accordion allowMultiple border={"0.15vw"} borderColor={"teal"}>
+            <div className="resource">
+                <div className="resource-info">
+                    <div className="r-header">
+                        <Heading size={"lg"}>
+                            {props.resource.resource_name}
+                        </Heading>
+                        <Link href={props.resource.url} isExternal>
+                            link <ExternalLinkIcon mx="1vw" />
+                        </Link>
+                        <Heading size={"md"}>{`added by: ${recName}`}</Heading>
+                    </div>
+                    <Heading
+                        size={"md"}
+                    >{`by ${props.resource.author_name}`}</Heading>
+                    <Text>{props.resource.description}</Text>
+                </div>
+                <Box className="buttons-box">
+                    <Box className="likes">
+                        <Button
+                            onClick={() => {
+                                likeResource();
+                            }}
+                        >
+                            👍
+                        </Button>
+                        <Text>{`Likes ${props.resource.likes_count}`}</Text>
+                    </Box>
+                    <Box className="dislikes">
+                        <Button
+                            onClick={() => {
+                                dislikeResource();
+                            }}
+                        >
+                            👎
+                        </Button>
+                        <Text>{`Dislikes ${props.resource.dislikes_count}`}</Text>
+                    </Box>
+                    {props.showResourcesPage ? (
+                        <Button
+                            colorScheme="teal"
+                            onClick={() => {
+                                addToStudyList();
+                            }}
+                        >
+                            Add to my study list
+                        </Button>
+                    ) : (
+                        <Button
+                            colorScheme="pink"
+                            onClick={() => {
+                                deleteFromStudyList();
+                            }}
+                        >
+                            Remove from my study list
+                        </Button>
+                    )}
                 </Box>
-                <Box>
-                    <Button
-                        onClick={() => {
-                            dislikeResource();
-                        }}
-                    >
-                        👎
-                    </Button>
-                    <Text>{`Dislikes ${props.resource.dislikes_count}`}</Text>
-                </Box>
-                {props.showResourcesPage ? (
-                    <Button
-                        colorScheme="teal"
-                        onClick={() => {
-                            addToStudyList();
-                        }}
-                    >
-                        Add to my study list
-                    </Button>
-                ) : (
-                    <Button
-                        colorScheme="pink"
-                        onClick={() => {
-                            deleteFromStudyList();
-                        }}
-                    >
-                        Remove from my study list
-                    </Button>
-                )}
                 <div className="tags">
                     {props.tags.map((tag, index) => (
                         <Button key={index}>{tag}</Button>
                     ))}
                 </div>
-            </Card>
-            <AccordionItem>
+            </div>
+            <AccordionItem className="expand">
                 <AccordionButton>
                     <Box>Expand</Box>
                     <AccordionIcon />
                 </AccordionButton>
                 <AccordionPanel>
-                    {`date added: ${props.resource.date_added}`}
-                    {`recommender comment: ${props.resource.recommender_comment}`}
-                    {`recommender reason: ${props.resource.recommender_reason}`}
-                    {`content type: ${props.resource.content_type}`}
-                    {`recommended for week: ${props.resource.build_phase}`}
+                    <UnorderedList>
+                        <ListItem>{`date added: ${props.resource.date_added.slice(
+                            0,
+                            10
+                        )}`}</ListItem>
+                        <ListItem>{`recommender comment: ${props.resource.recommender_comment}`}</ListItem>
+                        <ListItem>{`recommender reason: ${props.resource.recommender_reason}`}</ListItem>
+                        <ListItem>{`content type: ${props.resource.content_type}`}</ListItem>
+                        <ListItem>{`recommended for week ${props.resource.build_phase}`}</ListItem>
+                    </UnorderedList>
                 </AccordionPanel>
             </AccordionItem>
         </Accordion>

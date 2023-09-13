@@ -1,3 +1,48 @@
 html {
     background: #f8f8f8;
 }
+.resource {
+    display: grid;
+    grid-template-areas:
+        "resource-info resource-info buttons-box"
+        "tags tags buttons-box";
+    grid-template-rows: 3fr 1fr;
+    grid-template-columns: 2fr 1fr;
+    padding: 1vw;
+    margin: 1vw;
+    border: 0.15vw solid teal;
+}
+.buttons-box {
+    grid-area: buttons-box;
+    display: flex;
+    flex-direction: column;
+    max-width: 12vw;
+}
+.likes {
+    padding: 0.5vw;
+    display: flex;
+    flex-direction: row;
+}
+.dislikes {
+    padding: 0.5vw;
+    display: flex;
+    flex-direction: row;
+}
+.resources {
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+}
+.tags {
+    grid-area: tags;
+}
+.resource-info {
+    grid-area: resource-info;
+}
+.r-header {
+    display: grid;
+    grid-template-columns: 1fr 0.5fr 2fr;
+}
+.expand {
+    padding: 1vw;
+    margin: 1vw;
+}

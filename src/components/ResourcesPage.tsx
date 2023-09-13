@@ -36,7 +36,7 @@ export function ResourcesPage() {
     return (
         <div>
             <AddResourceComponent />
-            {resourcesForRender}
+            <div className="resources">{resourcesForRender}</div>
         </div>
     );
 }

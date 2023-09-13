@@ -1,17 +1,40 @@
-import { Resource, ResourceComponent } from "./ResourceComponent";
-import resources from "../resources.json";
-import { AddResourceComponent } from "./AddResourceComponent";
-// import { baseURL } from "../config";
+
+import { Resource, ResourceComponent } from "./Resource";
+import { useEffect, useState } from "react";
+import { baseURL } from "../config";
+import axios from "axios";
 
 export function ResourcesPage() {
-    const resourcesFromJsonFile: Resource[] = resources.resources;
+    const [resources, setResources] = useState<Resource[]>([]);
+    const [tags, setTags] = useState<string[]>([]);
+    const [userId, _setUserId] = useState<number>(0);
+    const [showResourcesPage, _setShowResourcesPage] = useState<boolean>(true);
 
-    return (
-        <div>
-            <AddResourceComponent />
-            {resourcesFromJsonFile.map((el) => {
-                return <ResourceComponent key={el.id} resource={el} />;
-            })}
-        </div>
-    );
+    useEffect(() => {
+        async function getResources() {
+            const response = await axios.get(`${baseURL}/resources`);
+            setResources(response.data);
+        }
+        getResources();
+    }, []);
+
+    useEffect(() => {
+        async function getTags() {
+            const response = await axios.get(`${baseURL}/tags`);
+            setTags(response.data);
+        }
+        getTags();
+    }, []);
+
+    const resourcesForRender = resources.map((r, index) => (
+        <ResourceComponent
+            key={index}
+            resource={r}
+            tags={tags}
+            user_id={userId}
+            showResourcesPage={showResourcesPage}
+        />
+    ));
+    return <div>{resourcesForRender}</div>;
+
 }

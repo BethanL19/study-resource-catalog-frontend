@@ -42,14 +42,19 @@ export function AddResourceComponent({
         "I recommend this resource after having used it"
     );
     const [reason, setReason] = useState("");
+    const [tags, setTags] = useState("");
 
     const toast = useToast();
 
     const handleSubmit = async () => {
         const allFields = inputFields.concat(contentTypeField);
-        const emptyFields = allFields.filter(
-            (field) => field.isRequired && field.value === ""
-        );
+        const emptyFields = allFields.filter((field) => {
+            console.log("Checking " + field.title);
+            console.log("Value: " + field.value);
+            console.log("Length: " + field.value.length);
+            console.log("isRequired? " + field.isRequired);
+            return field.isRequired && field.value.length === 0;
+        });
         console.log("Empty fields are:");
         console.log(emptyFields);
         if (emptyFields.length > 0) {
@@ -63,7 +68,7 @@ export function AddResourceComponent({
             return;
         }
         try {
-            await axios.post(`${baseURL}/resources/new`, {
+            const response = await axios.post(`${baseURL}/resources/new`, {
                 resource_name: resourceName,
                 author_name: authorName,
                 url,
@@ -73,6 +78,10 @@ export function AddResourceComponent({
                 recommender_id: 1,
                 recommender_comment: comment,
                 recommender_reason: reason,
+            });
+            const lowercaseTags = tags.toLowerCase();
+            await axios.post(`${baseURL}/tags/${response.data[0].id}`, {
+                tags: lowercaseTags,
             });
             onClose();
 
@@ -100,7 +109,7 @@ export function AddResourceComponent({
 
     interface IInputField {
         title: string;
-        value: string;
+        value: string | string[];
         callback: (event: React.ChangeEvent<HTMLInputElement>) => void;
         isRequired: boolean;
     }
@@ -148,6 +157,12 @@ export function AddResourceComponent({
             value: reason,
             callback: (event) => setReason(event.target.value),
             isRequired: false,
+        },
+        {
+            title: "Tags (separated by commas)",
+            value: tags,
+            callback: (event) => setTags(event.target.value),
+            isRequired: true,
         },
     ];
 

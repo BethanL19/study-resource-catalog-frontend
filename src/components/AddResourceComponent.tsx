@@ -42,6 +42,7 @@ export function AddResourceComponent({
         "I recommend this resource after having used it"
     );
     const [reason, setReason] = useState("");
+    const [tags, setTags] = useState<string[]>([]);
 
     const toast = useToast();
 
@@ -100,7 +101,7 @@ export function AddResourceComponent({
 
     interface IInputField {
         title: string;
-        value: string;
+        value: string | string[];
         callback: (event: React.ChangeEvent<HTMLInputElement>) => void;
         isRequired: boolean;
     }
@@ -111,6 +112,13 @@ export function AddResourceComponent({
         callback: (event) => setContentType(event.target.value),
         isRequired: true,
     };
+
+    // const tagsField: IInputField = {
+    //     title: "Tags",
+    //     value: tags,
+    //     callback: (event) => setTags(event.target.value.split(",")),
+    //     isRequired: false,
+    // };
 
     const inputFields: IInputField[] = [
         {
@@ -147,6 +155,12 @@ export function AddResourceComponent({
             title: "Reason",
             value: reason,
             callback: (event) => setReason(event.target.value),
+            isRequired: false,
+        },
+        {
+            title: "Tags (separated by commas)",
+            value: tags,
+            callback: (event) => setTags(event.target.value.split(",")),
             isRequired: false,
         },
     ];

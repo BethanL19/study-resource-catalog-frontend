@@ -10,13 +10,13 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    useDisclosure,
-    useToast,
-    Text,
     Radio,
     RadioGroup,
-    Stack,
     Select,
+    Stack,
+    Text,
+    useDisclosure,
+    useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
@@ -47,16 +47,11 @@ export function AddResourceComponent({
     const toast = useToast();
 
     const handleSubmit = async () => {
-        const allFields = inputFields.concat(contentTypeField);
+        const allFields = textInputFields.concat(contentTypeField);
         const emptyFields = allFields.filter((field) => {
-            console.log("Checking " + field.title);
-            console.log("Value: " + field.value);
-            console.log("Length: " + field.value.length);
-            console.log("isRequired? " + field.isRequired);
             return field.isRequired && field.value.length === 0;
         });
-        console.log("Empty fields are:");
-        console.log(emptyFields);
+
         if (emptyFields.length > 0) {
             toast({
                 title: "Empty fields",
@@ -100,6 +95,7 @@ export function AddResourceComponent({
             setBuildPhase("");
             setComment("I recommend this resource after having used it");
             setReason("");
+            setTags("");
 
             getResources(setResources);
         } catch (error) {
@@ -108,58 +104,66 @@ export function AddResourceComponent({
     };
 
     interface IInputField {
-        title: string;
+        label: string;
+        placeholder?: string;
         value: string | string[];
         callback: (event: React.ChangeEvent<HTMLInputElement>) => void;
         isRequired: boolean;
     }
 
     const contentTypeField: IInputField = {
-        title: "Content type",
+        label: "Content type",
         value: contentType,
         callback: (event) => setContentType(event.target.value),
         isRequired: true,
     };
 
-    const inputFields: IInputField[] = [
+    const textInputFields: IInputField[] = [
         {
-            title: "Resource name",
+            label: "Resource name",
+            placeholder: "Provide a name",
             value: resourceName,
             callback: (event) => setResourceName(event.target.value),
             isRequired: true,
         },
         {
-            title: "Author name",
+            label: "Author name",
+            placeholder: "Who created it?",
             value: authorName,
             callback: (event) => setAuthorName(event.target.value),
             isRequired: true,
         },
         {
-            title: "URL",
+            label: "URL",
+            placeholder: "https://google.com",
             value: url,
             callback: (event) => setUrl(event.target.value),
             isRequired: true,
         },
         {
-            title: "Description",
+            label: "Description",
+            placeholder: "Describe this resource...",
             value: description,
             callback: (event) => setDescription(event.target.value),
             isRequired: true,
         },
         {
-            title: "Build phase",
+            label: "Build phase",
+            placeholder: "0",
             value: buildPhase,
             callback: (event) => setBuildPhase(event.target.value),
             isRequired: true,
         },
         {
-            title: "Reason",
+            label: "Reason",
+            placeholder: "What do you think about this resource?",
             value: reason,
             callback: (event) => setReason(event.target.value),
             isRequired: false,
         },
         {
-            title: "Tags (separated by commas)",
+            label: "Tags (separated by commas)",
+            placeholder: "React,TypeScript,JavaScript",
             value: tags,
             callback: (event) => setTags(event.target.value),
             isRequired: true,
@@ -196,29 +200,32 @@ export function AddResourceComponent({
                     <ModalHeader>Add a new resource</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
-                        {inputFields.map((field) => (
-                            <FormControl key={field.title}>
+                        {textInputFields.map((field) => (
+                            <FormControl key={field.label}>
                                 <FormLabel>
                                     {field.isRequired && "* "}
-                                    {field.title}
+                                    {field.label}
                                 </FormLabel>
                                 <Input
                                     mb="5"
                                     borderColor={
                                         field.isRequired && field.value === ""
                                             ? "red"
-                                            : "gray"
+                                            : "inherit"
                                     }
-                                    placeholder={field.title}
+                                    placeholder={field.placeholder}
                                     value={field.value}
                                     onChange={field.callback}
                                 />
                             </FormControl>
                         ))}
 
-                        <FormControl>
+                        <FormControl mb="5">
                             <FormLabel>* Content type</FormLabel>
                             <Select
+                                borderColor={
+                                    contentType === "" ? "red" : "inherit"
+                                }
                                 value={contentType}
                                 onChange={(event) =>
                                     setContentType(event.target.value)
@@ -235,24 +242,31 @@ export function AddResourceComponent({
                             </Select>
                         </FormControl>
 
-                        <RadioGroup onChange={setComment} value={comment}>
-                            <Stack direction="column">
-                                <Radio value="I recommend this resource after having used it">
-                                    I recommend this resource after having used
-                                    it
-                                </Radio>
-                                <Radio value="I do not recommend this resource, having used it">
-                                    I do not recommend this resource, having
-                                    used it
-                                </Radio>
-                                <Radio value="I haven't used this resource but it looks promising">
-                                    I haven't used this resource but it looks
-                                    promising
-                                </Radio>
-                            </Stack>
-                        </RadioGroup>
+                        <FormControl mb="5">
+                            <FormLabel>* Verdict</FormLabel>
+                            <RadioGroup
+                                mb="5"
+                                onChange={setComment}
+                                value={comment}
+                            >
+                                <Stack direction="column">
+                                    <Radio value="I recommend this resource after having used it">
+                                        I recommend this resource after having
+                                        used it
+                                    </Radio>
+                                    <Radio value="I do not recommend this resource, having used it">
+                                        I do not recommend this resource, having
+                                        used it
+                                    </Radio>
+                                    <Radio value="I haven't used this resource but it looks promising">
+                                        I haven't used this resource but it
+                                        looks promising
+                                    </Radio>
+                                </Stack>
+                            </RadioGroup>
+                        </FormControl>
 
-                        <Text>* Required</Text>
+                        <Text>(* Required)</Text>
                     </ModalBody>
 
                     <ModalFooter>

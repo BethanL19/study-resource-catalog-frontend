@@ -74,7 +74,7 @@ export function ResourcesPage() {
     return (
         <div>
             <div className="login">
-                <Login setUserId={setUserId} />
+                <Login userId={userId} setUserId={setUserId} />
             </div>
             <div className="add-button">
                 <AddResourceComponent

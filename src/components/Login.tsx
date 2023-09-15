@@ -7,9 +7,13 @@ interface User {
     name: string;
     is_faculty: boolean;
 }
-export function Login(): JSX.Element {
-    const [users, setUsers] = useState<User[]>([]);
 
+interface LoginProps {
+    setUserId: React.Dispatch<React.SetStateAction<number>>;
+}
+export function Login(props: LoginProps): JSX.Element {
+    const [users, setUsers] = useState<User[]>([]);
+    const [selectedUserId, setSelectedUserId] = useState(0);
     useEffect(() => {
         async function getUsers() {
             const response = await axios.get(`${baseURL}/users`);
@@ -18,13 +22,28 @@ export function Login(): JSX.Element {
         }
         getUsers();
     }, []);
+
+    const handleLogin = () => {
+        props.setUserId(selectedUserId);
+    };
+
     return (
         <>
-            <select>
+            <select
+                value={selectedUserId}
+                onChange={(event) =>
+                    setSelectedUserId(parseInt(event.target.value))
+                }
+            >
                 {users.map((user) => {
-                    return <option key={user.id}>{user.name}</option>;
+                    return (
+                        <option value={user.id} key={user.id}>
+                            {user.name}
+                        </option>
+                    );
                 })}
             </select>
+            <button onClick={handleLogin}>Login</button>
         </>
     );
 }

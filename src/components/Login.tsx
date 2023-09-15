@@ -11,8 +11,9 @@ interface User {
 interface LoginProps {
     userId: number;
     setUserId: React.Dispatch<React.SetStateAction<number>>;
+    setShowResourcesPage: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export function Login({ userId, setUserId }: LoginProps): JSX.Element {
+export function Login(props: LoginProps): JSX.Element {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUserId, setSelectedUserId] = useState(0);
     useEffect(() => {
@@ -24,16 +25,17 @@ export function Login({ userId, setUserId }: LoginProps): JSX.Element {
     }, []);
 
     const handleLogin = () => {
-        setUserId(selectedUserId);
+        props.setUserId(selectedUserId);
     };
     const handleLogout = () => {
-        setUserId(1);
+        props.setUserId(0);
         setSelectedUserId(0);
+        props.setShowResourcesPage(true);
     };
 
     return (
         <>
-            {userId === 1 ? (
+            {props.userId === 0 ? (
                 <div>
                     <select
                         value={selectedUserId}

@@ -16,6 +16,7 @@ import {
 import { baseURL } from "../config";
 import axios from "axios";
 import { getResources } from "../utils/getResources";
+import { getStudyList } from "../utils/getStudyList";
 
 export interface Resource {
     id: number;
@@ -44,22 +45,41 @@ export interface ResourceComponentProps {
 
 export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
     const addToStudyList = async () => {
-        await axios.post(
-            `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
-        );
+        if (props.user_id !== 0) {
+            await axios.post(
+                `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
+            );
+        }
     };
     const deleteFromStudyList = async () => {
-        await axios.delete(
-            `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
-        );
+        if (props.user_id !== 0) {
+            await axios.delete(
+                `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
+            );
+            getStudyList(props.setResources, props.user_id);
+        }
     };
     const likeResource = async () => {
-        await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
-        getResources(props.setResources);
+        if (props.user_id !== 0) {
+            await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
+            if (props.showResourcesPage) {
+                getResources(props.setResources);
+            } else {
+                getStudyList(props.setResources, props.user_id);
+            }
+        }
     };
     const dislikeResource = async () => {
-        await axios.put(`${baseURL}/resources/dislike/${props.resource.id}`);
-        getResources(props.setResources);
+        if (props.user_id !== 0) {
+            await axios.put(
+                `${baseURL}/resources/dislike/${props.resource.id}`
+            );
+            if (props.showResourcesPage) {
+                getResources(props.setResources);
+            } else {
+                getStudyList(props.setResources, props.user_id);
+            }
+        }
     };
 
     return (

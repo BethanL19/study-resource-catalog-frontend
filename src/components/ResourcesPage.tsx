@@ -7,18 +7,19 @@ import { getResources } from "../utils/getResources";
 import { Button } from "@chakra-ui/react";
 import { searchResources } from "../utils/searchResources";
 import { filterResourceTags } from "../utils/filterResourceTags";
-import { Login } from "./Login";
 
 interface Tag {
     tag: string;
 }
+interface ResourcePageProps {
+    userId: number;
+    showResourcesPage: boolean;
+    setShowResourcesPage: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-export function ResourcesPage() {
+export function ResourcesPage(props: ResourcePageProps) {
     const [resources, setResources] = useState<Resource[]>([]);
     const [searchableTags, setSearchableTags] = useState<Tag[]>([]);
-    // set to be 1 until login built
-    const [userId, setUserId] = useState<number>(1);
-    const [showResourcesPage, _setShowResourcesPage] = useState<boolean>(true);
     const [typedSearch, setTypedSearch] = useState("");
     const [clickedTags, setClickedTags] = useState<string[]>([]);
 
@@ -45,6 +46,11 @@ export function ResourcesPage() {
             );
         }
     };
+    const handleStudyListPage = () => {
+        if (props.userId !== 0) {
+            props.setShowResourcesPage(false);
+        }
+    };
 
     const resourcesData = searchResources(
         typedSearch,
@@ -55,8 +61,8 @@ export function ResourcesPage() {
         <ResourceComponent
             key={index}
             resource={r}
-            user_id={userId}
-            showResourcesPage={showResourcesPage}
+            user_id={props.userId}
+            showResourcesPage={props.showResourcesPage}
             setResources={setResources}
         />
     ));
@@ -73,14 +79,18 @@ export function ResourcesPage() {
     ));
     return (
         <div>
-            <div className="login">
-                <Login userId={userId} setUserId={setUserId} />
-            </div>
-            <div className="add-button">
-                <AddResourceComponent
-                    setResources={setResources}
-                    userId={userId}
-                />
+            <div>
+                <div className="add-button">
+                    <AddResourceComponent
+                        setResources={setResources}
+                        userId={props.userId}
+                    />
+                </div>
+                <div>
+                    <Button onClick={handleStudyListPage}>
+                        Go to my study list
+                    </Button>
+                </div>
             </div>
             <div className="searchables">
                 <input

@@ -1,5 +1,5 @@
 import { Resource } from "../components/Resource";
-// name, desc, tags, author
+// tags from buttons
 export function searchResources(typedSearch: string, resources: Resource[]) {
     let filteredResources;
     if (typedSearch.length > 0) {

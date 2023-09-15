@@ -63,7 +63,7 @@ export function ResourcesPage() {
     const searchTags = searchableTags.map((t, index) => (
         <Button
             key={index}
-            colorScheme="blue"
+            colorScheme="pink"
             onClick={() => {
                 handleTagClick(t.tag);
             }}
@@ -73,17 +73,23 @@ export function ResourcesPage() {
     ));
     return (
         <div>
-            <Login setUserId={setUserId} />
-            <AddResourceComponent setResources={setResources} />
-            <input
-                className="searchBar"
-                placeholder="Search..."
-                value={typedSearch}
-                onChange={(event) => {
-                    handleSearch(event.target.value);
-                }}
-            />
-            {searchTags}
+            <div className="login">
+                <Login setUserId={setUserId} />
+            </div>
+            <div className="add-button">
+                <AddResourceComponent setResources={setResources} />
+            </div>
+            <div className="searchables">
+                <input
+                    className="searchBar"
+                    placeholder="Search..."
+                    value={typedSearch}
+                    onChange={(event) => {
+                        handleSearch(event.target.value);
+                    }}
+                />
+                <div className="searchTags">{searchTags}</div>
+            </div>
             <div className="resources">{resourcesForRender}</div>
         </div>
     );

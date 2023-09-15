@@ -70,13 +70,13 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
     };
     getName();
     return (
-        <Accordion allowMultiple border={"0.15vw"} borderColor={"teal"}>
+        <Accordion allowMultiple className="resource-card">
             <div className="resource">
+                <Heading size={"lg"} className="resource-title">
+                    {props.resource.resource_name}
+                </Heading>
                 <div className="resource-info">
                     <div className="r-header">
-                        <Heading size={"lg"}>
-                            {props.resource.resource_name}
-                        </Heading>
                         <Link href={props.resource.url} isExternal>
                             link <ExternalLinkIcon mx="1vw" />
                         </Link>
@@ -85,7 +85,9 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                     <Heading
                         size={"md"}
                     >{`by ${props.resource.author_name}`}</Heading>
-                    <Text>{props.resource.description}</Text>
+                    <Text className="description">
+                        {props.resource.description}
+                    </Text>
                 </div>
                 <Box className="buttons-box">
                     <Box className="likes">
@@ -96,7 +98,9 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                         >
                             👍
                         </Button>
-                        <Text>{`Likes ${props.resource.likes_count}`}</Text>
+                        <Text
+                            marginLeft={"0.5vw"}
+                        >{`Likes ${props.resource.likes_count}`}</Text>
                     </Box>
                     <Box className="dislikes">
                         <Button
@@ -106,7 +110,9 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                         >
                             👎
                         </Button>
-                        <Text>{`Dislikes ${props.resource.dislikes_count}`}</Text>
+                        <Text
+                            marginLeft={"0.5vw"}
+                        >{`Dislikes ${props.resource.dislikes_count}`}</Text>
                     </Box>
                     {props.showResourcesPage ? (
                         <Button

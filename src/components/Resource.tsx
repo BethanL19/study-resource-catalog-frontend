@@ -63,7 +63,9 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
         getResources(props.setResources);
     };
     const getName = async () => {
-        const response = await axios.get(`${baseURL}/user/${props.user_id}`);
+        const response = await axios.get(
+            `${baseURL}/user/${props.resource.recommender_id}`
+        );
         setRecName(response.data[0].name);
     };
     getName();

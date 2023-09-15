@@ -77,7 +77,7 @@ export function ResourcesPage() {
                 <Login setUserId={setUserId} />
             </div>
             <div className="add-button">
-                <AddResourceComponent setResources={setResources} />
+                <AddResourceComponent setResources={setResources} userId={userId} />
             </div>
             <div className="searchables">
                 <input

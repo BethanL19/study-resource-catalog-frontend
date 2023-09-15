@@ -7,6 +7,7 @@ import { getResources } from "../utils/getResources";
 import { Button } from "@chakra-ui/react";
 import { searchResources } from "../utils/searchResources";
 import { filterResourceTags } from "../utils/filterResourceTags";
+import { Login } from "./Login";
 
 interface Tag {
     tag: string;
@@ -16,7 +17,7 @@ export function ResourcesPage() {
     const [resources, setResources] = useState<Resource[]>([]);
     const [searchableTags, setSearchableTags] = useState<Tag[]>([]);
     // set to be 1 until login built
-    const [userId, _setUserId] = useState<number>(1);
+    const [userId, setUserId] = useState<number>(1);
     const [showResourcesPage, _setShowResourcesPage] = useState<boolean>(true);
     const [typedSearch, setTypedSearch] = useState("");
     const [clickedTags, setClickedTags] = useState<string[]>([]);
@@ -72,6 +73,7 @@ export function ResourcesPage() {
     ));
     return (
         <div>
+            <Login setUserId={setUserId} />
             <AddResourceComponent setResources={setResources} />
             <input
                 className="searchBar"

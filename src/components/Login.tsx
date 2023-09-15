@@ -18,7 +18,6 @@ export function Login({ userId, setUserId }: LoginProps): JSX.Element {
     useEffect(() => {
         async function getUsers() {
             const response = await axios.get(`${baseURL}/users`);
-            console.log(response.data);
             setUsers(response.data);
         }
         getUsers();

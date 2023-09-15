@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { baseURL } from "../config";
 import axios from "axios";
-import { useState } from "react";
 import { getResources } from "../utils/getResources";
 
 export interface Resource {
@@ -33,6 +32,7 @@ export interface Resource {
     likes_count: number;
     dislikes_count: number;
     tags: string[];
+    recommender_name: string;
 }
 
 export interface ResourceComponentProps {
@@ -43,7 +43,6 @@ export interface ResourceComponentProps {
 }
 
 export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
-    const [recName, setRecName] = useState("");
     const addToStudyList = async () => {
         await axios.post(
             `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
@@ -62,13 +61,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
         await axios.put(`${baseURL}/resources/dislike/${props.resource.id}`);
         getResources(props.setResources);
     };
-    const getName = async () => {
-        const response = await axios.get(
-            `${baseURL}/user/${props.resource.recommender_id}`
-        );
-        setRecName(response.data[0].name);
-    };
-    getName();
+
     return (
         <Accordion allowMultiple className="resource-card">
             <div className="resource">
@@ -80,7 +73,9 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                         <Link href={props.resource.url} isExternal>
                             link <ExternalLinkIcon mx="1vw" />
                         </Link>
-                        <Heading size={"md"}>{`added by: ${recName}`}</Heading>
+                        <Heading
+                            size={"md"}
+                        >{`added by: ${props.resource.recommender_name}`}</Heading>
                     </div>
                     <Heading
                         size={"md"}

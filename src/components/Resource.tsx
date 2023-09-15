@@ -32,11 +32,11 @@ export interface Resource {
     recommender_reason: string;
     likes_count: number;
     dislikes_count: number;
+    tags: string[];
 }
 
 export interface ResourceComponentProps {
     resource: Resource;
-    tags: string[];
     user_id: number;
     showResourcesPage: boolean;
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
@@ -63,9 +63,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
         getResources(props.setResources);
     };
     const getName = async () => {
-        const response = await axios.get(
-            `${baseURL}/user/${props.resource.id}`
-        );
+        const response = await axios.get(`${baseURL}/user/${props.user_id}`);
         setRecName(response.data[0].name);
     };
     getName();
@@ -129,7 +127,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                     )}
                 </Box>
                 <div className="tags">
-                    {props.tags.map((tag, index) => (
+                    {props.resource.tags.map((tag, index) => (
                         <Button key={index}>{tag}</Button>
                     ))}
                 </div>

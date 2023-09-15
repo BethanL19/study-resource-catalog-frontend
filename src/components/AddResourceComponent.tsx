@@ -94,7 +94,6 @@ export function AddResourceComponent({
             },
         });
     }, [userId]);
-    console.log(resource);
 
     const toast = useToast();
 

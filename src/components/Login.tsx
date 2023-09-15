@@ -9,9 +9,10 @@ interface User {
 }
 
 interface LoginProps {
+    userId: number;
     setUserId: React.Dispatch<React.SetStateAction<number>>;
 }
-export function Login(props: LoginProps): JSX.Element {
+export function Login({ userId, setUserId }: LoginProps): JSX.Element {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUserId, setSelectedUserId] = useState(0);
     useEffect(() => {
@@ -24,26 +25,37 @@ export function Login(props: LoginProps): JSX.Element {
     }, []);
 
     const handleLogin = () => {
-        props.setUserId(selectedUserId);
+        setUserId(selectedUserId);
+    };
+    const handleLogout = () => {
+        setUserId(1);
+        setSelectedUserId(0);
     };
 
     return (
         <>
-            <select
-                value={selectedUserId}
-                onChange={(event) =>
-                    setSelectedUserId(parseInt(event.target.value))
-                }
-            >
-                {users.map((user) => {
-                    return (
-                        <option value={user.id} key={user.id}>
-                            {user.name}
-                        </option>
-                    );
-                })}
-            </select>
-            <button onClick={handleLogin}>Login</button>
+            {userId === 1 ? (
+                <div>
+                    <select
+                        value={selectedUserId}
+                        onChange={(event) =>
+                            setSelectedUserId(parseInt(event.target.value))
+                        }
+                    >
+                        <option value=""></option>
+                        {users.map((user) => {
+                            return (
+                                <option value={user.id} key={user.id}>
+                                    {user.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                    <button onClick={handleLogin}>Login</button>
+                </div>
+            ) : (
+                <button onClick={handleLogout}>Logout</button>
+            )}
         </>
     );
 }

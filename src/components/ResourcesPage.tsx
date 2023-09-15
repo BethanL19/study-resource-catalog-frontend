@@ -74,7 +74,7 @@ export function ResourcesPage() {
     return (
         <div>
             <Login setUserId={setUserId} />
-            <AddResourceComponent setResources={setResources} />
+            <AddResourceComponent setResources={setResources} userId={userId} />
             <input
                 className="searchBar"
                 placeholder="Search..."

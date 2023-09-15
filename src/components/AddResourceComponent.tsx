@@ -19,13 +19,14 @@ import {
     useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { baseURL } from "../config";
 import { getResources } from "../utils/getResources";
 import { Resource } from "./Resource";
 
 interface AddResourceComponentProps {
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
+    userId: number;
 }
 
 type State = {
@@ -51,35 +52,48 @@ type Action =
       }
     | { type: "reset" };
 
-const initialState = {
-    resource_name: "",
-    author_name: "",
-    url: "",
-    description: "",
-    content_type: "",
-    build_phase: "",
-    recommender_id: "1",
-    recommender_comment: "I recommend this resource after having used it",
-    recommender_reason: "",
-    tags: "",
-};
-
-const reducer = (state: State, action: Action) => {
-    switch (action.type) {
-        case "update":
-            return { ...state, [action.payload.key]: action.payload.value };
-        case "reset":
-            return initialState;
-        default:
-            throw new Error(`Unknown action type`);
-    }
-};
-
 export function AddResourceComponent({
     setResources,
+    userId,
 }: AddResourceComponentProps): JSX.Element {
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const initialState = {
+        resource_name: "",
+        author_name: "",
+        url: "",
+        description: "",
+        content_type: "",
+        build_phase: "",
+        recommender_id: "",
+        recommender_comment: "I recommend this resource after having used it",
+        recommender_reason: "",
+        tags: "",
+    };
+    const reducer = (state: State, action: Action) => {
+        switch (action.type) {
+            case "update":
+                return {
+                    ...state,
+                    [action.payload.key]: action.payload.value,
+                };
+            case "reset":
+                return initialState;
+            default:
+                throw new Error(`Unknown action type`);
+        }
+    };
+
     const [resource, dispatch] = useReducer(reducer, initialState);
+    useEffect(() => {
+        dispatch({
+            type: "update",
+            payload: {
+                key: "recommender_id",
+                value: userId.toString(),
+            },
+        });
+    }, [userId]);
     console.log(resource);
 
     const toast = useToast();

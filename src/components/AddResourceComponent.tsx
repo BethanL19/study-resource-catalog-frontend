@@ -118,6 +118,36 @@ export function AddResourceComponent({
             getResources(setResources);
         } catch (error) {
             console.error(error);
+            interface ServerError {
+                response: {
+                    data: {
+                        length: number;
+                        name: string;
+                        severity: string;
+                        code: string;
+                        detail: string;
+                        schema: string;
+                        table: string;
+                        constraint: string;
+                        file: string;
+                        line: string;
+                        routine: string;
+                    };
+                };
+            }
+            const serverError: ServerError = error as ServerError;
+            const errorCode = serverError.response.data.code;
+            if (errorCode === "23505") {
+                // This code means a violation of the unique key constraint on the url column,
+                // which means this resource has already been added.
+                toast({
+                    title: "Duplicate resource",
+                    description: "The URL you have provided already exists.",
+                    status: "error",
+                    duration: 2000,
+                    isClosable: true,
+                });
+            }
         }
     };
 

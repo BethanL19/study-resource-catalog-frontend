@@ -17,6 +17,7 @@ import { baseURL } from "../config";
 import axios from "axios";
 import { getResources } from "../utils/getResources";
 import { getStudyList } from "../utils/getStudyList";
+import showToast from "../utils/showToast";
 
 export interface Resource {
     id: number;
@@ -49,6 +50,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
             await axios.post(
                 `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
             );
+            showToast("Done!", "Added to your study list", "success");
         }
     };
     const deleteFromStudyList = async () => {
@@ -56,6 +58,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
             await axios.delete(
                 `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
             );
+            showToast("Done!", "Removed from your study list", "success");
             getStudyList(props.setResources, props.user_id);
         }
     };

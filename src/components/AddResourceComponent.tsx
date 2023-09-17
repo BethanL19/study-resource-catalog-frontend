@@ -16,13 +16,13 @@ import {
     Stack,
     Text,
     useDisclosure,
-    useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useReducer } from "react";
 import { baseURL } from "../config";
 import { getResources } from "../utils/getResources";
 import { Resource } from "./Resource";
+import showToast from "../utils/showToast";
 
 interface AddResourceComponentProps {
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
@@ -95,8 +95,6 @@ export function AddResourceComponent({
         });
     }, [userId]);
 
-    const toast = useToast();
-
     const handleSubmit = async () => {
         const allFields = textInputFields.concat(dropDownFields);
         const emptyFields = allFields.filter((field) => {
@@ -104,27 +102,22 @@ export function AddResourceComponent({
         });
 
         if (emptyFields.length > 0) {
-            toast({
-                title: "Empty fields",
-                description: `Please make sure you populate all the required fields`,
-                status: "warning",
-                duration: 2000,
-                isClosable: true,
-            });
+            showToast(
+                "Empty fields",
+                "Please make sure you populate all the required fields",
+                "warning"
+            );
             return;
         }
         try {
             await axios.post(`${baseURL}/resources/new`, resource);
 
             onClose();
-
-            toast({
-                title: "Resource added.",
-                description: "Your resource has been submitted.",
-                status: "success",
-                duration: 2000,
-                isClosable: true,
-            });
+            showToast(
+                "Resource added.",
+                "Your resource has been submitted.",
+                "success"
+            );
 
             dispatch({ type: "reset" });
 
@@ -153,13 +146,11 @@ export function AddResourceComponent({
             if (errorCode === "23505") {
                 // This code means a violation of the unique key constraint on the url column,
                 // which means this resource has already been added.
-                toast({
-                    title: "Duplicate resource",
-                    description: "The URL you have provided already exists.",
-                    status: "error",
-                    duration: 2000,
-                    isClosable: true,
-                });
+                showToast(
+                    "Duplicate resource",
+                    "The URL you have provided already exists.",
+                    "error"
+                );
             }
         }
     };

@@ -2,11 +2,12 @@ import { Resource, ResourceComponent } from "./Resource";
 import { useEffect, useState } from "react";
 import { baseURL } from "../config";
 import axios from "axios";
-import { AddResourceComponent } from "./AddResourceComponent";
+import { AddResource } from "./AddResource";
 import { getResources } from "../utils/getResources";
 import { Button } from "@chakra-ui/react";
 import { searchResources } from "../utils/searchResources";
 import { filterResourceTags } from "../utils/filterResourceTags";
+import showToast from "../utils/showToast";
 
 interface Tag {
     tag: string;
@@ -47,9 +48,15 @@ export function ResourcesPage(props: ResourcePageProps) {
         }
     };
     const handleStudyListPage = () => {
-        if (props.userId !== 0) {
-            props.setShowResourcesPage(false);
+        if (props.userId === 0) {
+            showToast(
+                "Not logged in!",
+                "Log in to access your study list",
+                "error"
+            );
+            return;
         }
+        props.setShowResourcesPage(false);
     };
 
     const resourcesData = searchResources(
@@ -81,7 +88,7 @@ export function ResourcesPage(props: ResourcePageProps) {
         <div>
             <div>
                 <div className="add-button">
-                    <AddResourceComponent
+                    <AddResource
                         setResources={setResources}
                         userId={props.userId}
                     />

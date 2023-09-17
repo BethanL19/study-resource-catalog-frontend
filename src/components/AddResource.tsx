@@ -24,7 +24,7 @@ import { getResources } from "../utils/getResources";
 import { Resource } from "./Resource";
 import showToast from "../utils/showToast";
 
-interface AddResourceComponentProps {
+interface AddResourceProps {
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
     userId: number;
 }
@@ -52,10 +52,10 @@ type Action =
       }
     | { type: "reset" };
 
-export function AddResourceComponent({
+export function AddResource({
     setResources,
     userId,
-}: AddResourceComponentProps): JSX.Element {
+}: AddResourceProps): JSX.Element {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const initialState = {
@@ -94,6 +94,14 @@ export function AddResourceComponent({
             },
         });
     }, [userId]);
+
+    const handleAddResourceClick = () => {
+        if (userId === 0) {
+            showToast("Not logged in!", "Log in to add resources", "error");
+            return;
+        }
+        onOpen();
+    };
 
     const handleSubmit = async () => {
         const allFields = textInputFields.concat(dropDownFields);
@@ -245,7 +253,7 @@ export function AddResourceComponent({
 
     return (
         <>
-            <Button onClick={onOpen} colorScheme="green">
+            <Button onClick={handleAddResourceClick} colorScheme="green">
                 + Add resource
             </Button>
 

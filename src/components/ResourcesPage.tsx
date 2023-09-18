@@ -1,53 +1,26 @@
 import { Resource, ResourceComponent } from "./Resource";
 import { useEffect, useState } from "react";
-import { baseURL } from "../config";
-import axios from "axios";
 import { AddResource } from "./AddResource";
 import { getResources } from "../utils/getResources";
 import { Button } from "@chakra-ui/react";
-import { searchResources } from "../utils/searchResources";
-import { filterResourceTags } from "../utils/filterResourceTags";
 import showToast from "../utils/showToast";
+import { Searchables } from "./Searchables";
 
-interface Tag {
-    tag: string;
-}
 interface ResourcePageProps {
     userId: number;
     showResourcesPage: boolean;
     setShowResourcesPage: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function ResourcesPage(props: ResourcePageProps) {
+export function ResourcesPage(props: ResourcePageProps): JSX.Element {
     const [resources, setResources] = useState<Resource[]>([]);
-    const [searchableTags, setSearchableTags] = useState<Tag[]>([]);
-    const [typedSearch, setTypedSearch] = useState("");
-    const [clickedTags, setClickedTags] = useState<string[]>([]);
+    const [searchedResources, setSearchedResources] = useState<Resource[]>([]);
 
     useEffect(() => {
         getResources(setResources);
     }, []);
     console.log(resources);
 
-    useEffect(() => {
-        async function getSearchableTags() {
-            const response = await axios.get(`${baseURL}/tags`);
-            setSearchableTags(response.data);
-        }
-        getSearchableTags();
-    }, []);
-
-    const handleSearch = (searchWord: string) => setTypedSearch(searchWord);
-
-    const handleTagClick = (tag: string) => {
-        if (!clickedTags.includes(tag)) {
-            setClickedTags([...clickedTags, tag]);
-        } else {
-            setClickedTags(
-                clickedTags.filter((clickedTag) => clickedTag !== tag)
-            );
-        }
-    };
     const handleStudyListPage = () => {
         if (props.userId === 0) {
             showToast(
@@ -60,12 +33,7 @@ export function ResourcesPage(props: ResourcePageProps) {
         props.setShowResourcesPage(false);
     };
 
-    const resourcesData = searchResources(
-        typedSearch,
-        filterResourceTags(clickedTags, resources)
-    );
-
-    const resourcesForRender = resourcesData.map((r, index) => (
+    const resourcesForRender = searchedResources.map((r, index) => (
         <ResourceComponent
             key={index}
             resource={r}
@@ -74,17 +42,7 @@ export function ResourcesPage(props: ResourcePageProps) {
             setResources={setResources}
         />
     ));
-    const searchTags = searchableTags.map((t, index) => (
-        <Button
-            key={index}
-            colorScheme={clickedTags.includes(t.tag) ? "blue" : "pink"}
-            onClick={() => {
-                handleTagClick(t.tag);
-            }}
-        >
-            {t.tag}
-        </Button>
-    ));
+
     return (
         <div>
             <div>
@@ -94,22 +52,15 @@ export function ResourcesPage(props: ResourcePageProps) {
                         userId={props.userId}
                     />
                 </div>
-                <div>
+                <div className="nav-button">
                     <Button onClick={handleStudyListPage}>
                         Go to my study list
                     </Button>
                 </div>
-            </div>
-            <div className="searchables">
-                <input
-                    className="searchBar"
-                    placeholder="Search..."
-                    value={typedSearch}
-                    onChange={(event) => {
-                        handleSearch(event.target.value);
-                    }}
+                <Searchables
+                    resources={resources}
+                    setSearchedResources={setSearchedResources}
                 />
-                <div className="searchTags">{searchTags}</div>
             </div>
             <div className="resources">{resourcesForRender}</div>
         </div>

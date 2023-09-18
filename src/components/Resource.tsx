@@ -170,7 +170,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
             </div>
             <AccordionItem className="expand">
                 <AccordionButton>
-                    <Box>Expand</Box>
+                    <Box background={"white"}>Expand</Box>
                     <AccordionIcon />
                 </AccordionButton>
                 <AccordionPanel>

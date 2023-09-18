@@ -16,6 +16,7 @@ export function Searchables(props: SearchableProps): JSX.Element {
     const [searchableTags, setSearchableTags] = useState<Tag[]>([]);
     const [typedSearch, setTypedSearch] = useState("");
     const [clickedTags, setClickedTags] = useState<string[]>([]);
+    const [noResults, setNoResults] = useState(false);
 
     useEffect(() => {
         getSearchableTags(setSearchableTags);
@@ -26,6 +27,11 @@ export function Searchables(props: SearchableProps): JSX.Element {
             typedSearch,
             filterResourceTags(clickedTags, props.resources)
         );
+        if (filteredResources.length === 0) {
+            setNoResults(true);
+        } else {
+            setNoResults(false);
+        }
         props.setSearchedResources(filteredResources);
     };
 
@@ -54,7 +60,7 @@ export function Searchables(props: SearchableProps): JSX.Element {
     const searchTags = searchableTags.map((t, index) => (
         <Button
             key={index}
-            colorScheme={clickedTags.includes(t.tag) ? "blue" : "pink"}
+            colorScheme={clickedTags.includes(t.tag) ? "pink" : "teal"}
             onClick={() => {
                 handleTagClick(t.tag);
             }}
@@ -73,7 +79,12 @@ export function Searchables(props: SearchableProps): JSX.Element {
                     handleSearch(event.target.value);
                 }}
             />
-            <div className="searchTags">{searchTags}</div>
+            <div className="searchTags">
+                {searchTags}
+                <div className="no-results">
+                    {noResults && "no results found"}
+                </div>
+            </div>
         </div>
     );
 }

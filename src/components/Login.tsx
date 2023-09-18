@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { baseURL } from "../config";
 import showToast from "../utils/showToast";
+import { Button, Select } from "@chakra-ui/react";
 
 interface User {
     id: number;
@@ -37,10 +38,10 @@ export function Login(props: LoginProps): JSX.Element {
     };
 
     return (
-        <>
+        <div className="login-surround">
             {props.userId === 0 ? (
-                <div>
-                    <select
+                <div className="login">
+                    <Select
                         value={selectedUserId}
                         onChange={(event) =>
                             setSelectedUserId(parseInt(event.target.value))
@@ -54,12 +55,14 @@ export function Login(props: LoginProps): JSX.Element {
                                 </option>
                             );
                         })}
-                    </select>
-                    <button onClick={handleLogin}>Login</button>
+                    </Select>
+                    <Button onClick={handleLogin}>Login</Button>
                 </div>
             ) : (
-                <button onClick={handleLogout}>Logout</button>
+                <div className="login">
+                    <Button onClick={handleLogout}>Logout</Button>
+                </div>
             )}
-        </>
+        </div>
     );
 }

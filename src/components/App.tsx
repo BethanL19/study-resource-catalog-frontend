@@ -10,13 +10,11 @@ function App() {
     const [userId, setUserId] = useState<number>(0);
     return (
         <ChakraProvider>
-            <div className="login">
                 <Login
                     userId={userId}
                     setUserId={setUserId}
                     setShowResourcesPage={setShowResourcesPage}
                 />
-            </div>
             {showResourcesPage ? (
                 <ResourcesPage
                     userId={userId}

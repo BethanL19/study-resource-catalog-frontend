@@ -14,9 +14,13 @@ export function StudyList(props: StudyListProps): JSX.Element {
     const [studyList, setStudyList] = useState<Resource[]>([]);
     const [searchedStudyList, setSearchedStudyList] = useState<Resource[]>([]);
 
-    useEffect(() => {
-        getStudyList(setStudyList, props.userId);
-    }, [props.userId]);
+    useEffect(
+        () => {
+            getStudyList(setStudyList, props.userId);
+        },
+        // eslint-disable-next-line
+        []
+    );
 
     const handleResourcesPage = () => {
         props.setShowResourcesPage(true);
@@ -35,7 +39,7 @@ export function StudyList(props: StudyListProps): JSX.Element {
     return (
         <div>
             <div>
-                <div>
+                <div className="nav-button">
                     <Button onClick={handleResourcesPage}>
                         Back to all resources
                     </Button>
@@ -45,7 +49,7 @@ export function StudyList(props: StudyListProps): JSX.Element {
                     setSearchedResources={setSearchedStudyList}
                 />
             </div>
-            <div>{studyResources}</div>
+            <div className="resources">{studyResources}</div>
         </div>
     );
 }

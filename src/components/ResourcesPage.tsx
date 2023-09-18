@@ -12,9 +12,9 @@ interface ResourcePageProps {
     setShowResourcesPage: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function ResourcesPage(props: ResourcePageProps):JSX.Element {
+export function ResourcesPage(props: ResourcePageProps): JSX.Element {
     const [resources, setResources] = useState<Resource[]>([]);
-    const [searchedResources, setSearchedResources] = useState<Resource[]>([])
+    const [searchedResources, setSearchedResources] = useState<Resource[]>([]);
 
     useEffect(() => {
         getResources(setResources);
@@ -31,7 +31,6 @@ export function ResourcesPage(props: ResourcePageProps):JSX.Element {
         }
         props.setShowResourcesPage(false);
     };
-
 
     const resourcesForRender = searchedResources.map((r, index) => (
         <ResourceComponent
@@ -52,12 +51,15 @@ export function ResourcesPage(props: ResourcePageProps):JSX.Element {
                         userId={props.userId}
                     />
                 </div>
-                <div>
+                <div className="nav-button">
                     <Button onClick={handleStudyListPage}>
                         Go to my study list
                     </Button>
                 </div>
-                <Searchables resources={resources} setSearchedResources={setSearchedResources}/>
+                <Searchables
+                    resources={resources}
+                    setSearchedResources={setSearchedResources}
+                />
             </div>
             <div className="resources">{resourcesForRender}</div>
         </div>

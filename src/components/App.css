@@ -1,5 +1,5 @@
 html {
-    background: #f8f8f8;
+    background: aliceblue;
 }
 .resource {
     display: grid;
@@ -67,21 +67,27 @@ html {
 }
 .searchables {
     display: grid;
-    grid-template-columns: 1fr 2.5fr;
+    grid-template-columns: 1fr 4fr;
     align-items: center;
+    background: aliceblue;
 }
 .searchTabs {
     justify-self: center;
 }
 .login {
     padding: 0.5vw;
-    margin-left: 1vw;
+    padding-left: 1vw;
     margin-top: 0.25vw;
+    background: aliceblue;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 20vw;
 }
 .add-button {
     padding: 0.5vw;
-    margin-left: 1vw;
-    margin-top: 0.25vw;
+    padding-left: 1vw;
+    padding-top: 0.25vw;
+    background: aliceblue;
 }
 .resource-card {
     border: 0.35vw solid teal;
@@ -89,4 +95,17 @@ html {
 .description {
     margin-top: 1vw;
     padding: 0.1vw;
+}
+.no-results {
+    text-align: center;
+    margin-right: 22vw;
+    margin-top: 1vw;
+}
+.nav-button {
+    background: aliceblue;
+    padding-left: 1vw;
+    padding-top: 0.25vw;
+}
+.login-surround {
+    background: aliceblue;
 }

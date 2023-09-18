@@ -14,13 +14,9 @@ export function StudyList(props: StudyListProps): JSX.Element {
     const [studyList, setStudyList] = useState<Resource[]>([]);
     const [searchedStudyList, setSearchedStudyList] = useState<Resource[]>([]);
 
-    useEffect(
-        () => {
-            getStudyList(setStudyList, props.userId);
-        },
-        // eslint-disable-next-line
-        []
-    );
+    useEffect(() => {
+        getStudyList(setStudyList, props.userId);
+    }, [props.userId]);
 
     const handleResourcesPage = () => {
         props.setShowResourcesPage(true);

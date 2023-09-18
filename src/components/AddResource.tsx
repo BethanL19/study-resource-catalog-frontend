@@ -23,6 +23,7 @@ import { baseURL } from "../config";
 import { getResources } from "../utils/getResources";
 import { Resource } from "./Resource";
 import showToast from "../utils/showToast";
+import { sendDiscordNotification } from "../utils/sendDiscordNotification";
 
 interface AddResourceProps {
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
@@ -126,6 +127,7 @@ export function AddResource({
                 "Your resource has been submitted.",
                 "success"
             );
+            await sendDiscordNotification(resource.resource_name, resource.url);
 
             dispatch({ type: "reset" });
 

@@ -17,6 +17,7 @@ import { baseURL } from "../config";
 import axios from "axios";
 import { getResources } from "../utils/getResources";
 import { getStudyList } from "../utils/getStudyList";
+import showToast from "../utils/showToast";
 
 export interface Resource {
     id: number;
@@ -45,40 +46,52 @@ export interface ResourceComponentProps {
 
 export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
     const addToStudyList = async () => {
-        if (props.user_id !== 0) {
-            await axios.post(
-                `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
+        if (props.user_id === 0) {
+            showToast(
+                "Not logged in!",
+                "Log in to access your study list",
+                "error"
             );
+            return;
         }
+
+        await axios.post(
+            `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
+        );
+        showToast("Done!", "Added to your study list", "success");
     };
     const deleteFromStudyList = async () => {
-        if (props.user_id !== 0) {
-            await axios.delete(
-                `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
-            );
+        await axios.delete(
+            `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
+        );
+        showToast("Done!", "Removed from your study list", "success");
+        getStudyList(props.setResources, props.user_id);
+    };
+
+    const likeResource = async () => {
+        if (props.user_id === 0) {
+            showToast("Not logged in!", "Log in to vote on resources", "error");
+            return;
+        }
+
+        await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
+        if (props.showResourcesPage) {
+            getResources(props.setResources);
+        } else {
             getStudyList(props.setResources, props.user_id);
         }
     };
-    const likeResource = async () => {
-        if (props.user_id !== 0) {
-            await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
-            if (props.showResourcesPage) {
-                getResources(props.setResources);
-            } else {
-                getStudyList(props.setResources, props.user_id);
-            }
-        }
-    };
     const dislikeResource = async () => {
-        if (props.user_id !== 0) {
-            await axios.put(
-                `${baseURL}/resources/dislike/${props.resource.id}`
-            );
-            if (props.showResourcesPage) {
-                getResources(props.setResources);
-            } else {
-                getStudyList(props.setResources, props.user_id);
-            }
+        if (props.user_id === 0) {
+            showToast("Not logged in!", "Log in to vote on resources", "error");
+            return;
+        }
+
+        await axios.put(`${baseURL}/resources/dislike/${props.resource.id}`);
+        if (props.showResourcesPage) {
+            getResources(props.setResources);
+        } else {
+            getStudyList(props.setResources, props.user_id);
         }
     };
 

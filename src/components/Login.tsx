@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { baseURL } from "../config";
+import showToast from "../utils/showToast";
 
 interface User {
     id: number;
@@ -26,11 +27,13 @@ export function Login(props: LoginProps): JSX.Element {
 
     const handleLogin = () => {
         props.setUserId(selectedUserId);
+        showToast("Welcome!", "You've been logged in.", "success");
     };
     const handleLogout = () => {
         props.setUserId(0);
         setSelectedUserId(0);
         props.setShowResourcesPage(true);
+        showToast("Bye now!", "You've been logged out.", "success");
     };
 
     return (

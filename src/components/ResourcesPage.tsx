@@ -76,7 +76,7 @@ export function ResourcesPage(props: ResourcePageProps) {
     const searchTags = searchableTags.map((t, index) => (
         <Button
             key={index}
-            colorScheme="pink"
+            colorScheme={clickedTags.includes(t.tag) ? "blue" : "pink"}
             onClick={() => {
                 handleTagClick(t.tag);
             }}

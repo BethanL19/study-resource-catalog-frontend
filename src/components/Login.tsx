@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { baseURL } from "../config";
 import showToast from "../utils/showToast";
 import { Button, Select } from "@chakra-ui/react";
+import getUsername from "../utils/getUsername";
 
-interface User {
+export interface User {
     id: number;
     name: string;
     is_faculty: boolean;
@@ -28,13 +29,20 @@ export function Login(props: LoginProps): JSX.Element {
 
     const handleLogin = () => {
         props.setUserId(selectedUserId);
-        showToast("Welcome!", "You've been logged in.", "success");
+        const username = getUsername(users, selectedUserId);
+        showToast(
+            `👋 Welcome, ${username}!`,
+            "You've been logged in.",
+            "success"
+        );
     };
     const handleLogout = () => {
         props.setUserId(0);
         setSelectedUserId(0);
         props.setShowResourcesPage(true);
-        showToast("Bye now!", "You've been logged out.", "success");
+
+        const username = getUsername(users, selectedUserId);
+        showToast(`👋 Bye, ${username}!`, "You've been logged out.", "success");
     };
 
     return (

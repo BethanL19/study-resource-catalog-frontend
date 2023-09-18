@@ -2,6 +2,7 @@ import { getStudyList } from "../utils/getStudyList";
 import { Resource, ResourceComponent } from "./Resource";
 import { useEffect, useState } from "react";
 import { Button } from "@chakra-ui/react";
+import { Searchables } from "./Searchables";
 
 interface StudyListProps {
     userId: number;
@@ -11,6 +12,7 @@ interface StudyListProps {
 
 export function StudyList(props: StudyListProps): JSX.Element {
     const [studyList, setStudyList] = useState<Resource[]>([]);
+    const [searchedStudyList, setSearchedStudyList] = useState<Resource[]>([]);
 
     useEffect(() => {
         getStudyList(setStudyList, props.userId);
@@ -20,7 +22,7 @@ export function StudyList(props: StudyListProps): JSX.Element {
         props.setShowResourcesPage(true);
     };
 
-    const studyResources = studyList.map((r, index) => (
+    const studyResources = searchedStudyList.map((r, index) => (
         <ResourceComponent
             key={index}
             resource={r}
@@ -33,9 +35,15 @@ export function StudyList(props: StudyListProps): JSX.Element {
     return (
         <div>
             <div>
-                <Button onClick={handleResourcesPage}>
-                    Back to all resources
-                </Button>
+                <div>
+                    <Button onClick={handleResourcesPage}>
+                        Back to all resources
+                    </Button>
+                </div>
+                <Searchables
+                    resources={studyList}
+                    setSearchedResources={setSearchedStudyList}
+                />
             </div>
             <div>{studyResources}</div>
         </div>

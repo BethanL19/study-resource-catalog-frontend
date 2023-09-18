@@ -4,6 +4,8 @@ import { baseURL } from "../../src/config";
 describe("Test the request body of posting a resource", () => {
     it("adds a resource", () => {
         cy.visit("http://localhost:3000/");
+        cy.get('option[value="3"]').parent().select("Oskar");
+        cy.contains("Login").click();
         cy.contains("+ Add resource").click();
         cy.contains("Resource name").type("Writing your first E2E test");
         cy.contains("Author name").type("Cypress.io");

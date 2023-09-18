@@ -27,6 +27,7 @@ export function ResourcesPage(props: ResourcePageProps) {
     useEffect(() => {
         getResources(setResources);
     }, []);
+    console.log(resources);
 
     useEffect(() => {
         async function getSearchableTags() {

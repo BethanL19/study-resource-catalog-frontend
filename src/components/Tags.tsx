@@ -3,14 +3,18 @@ import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import { baseURL } from "../config";
 import { Tag } from "./Searchables";
+import { Action } from "./AddResource";
+import { MultiValue } from "react-select";
 
 interface TagOption {
     value: string;
     label: string;
 }
-export function Tags(): JSX.Element {
+interface TagsProps {
+    dispatch: React.Dispatch<Action>;
+}
+export function Tags(props: TagsProps): JSX.Element {
     const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
-    const [_selectedTags, setSelectedTags] = useState<string[]>([]);
 
     const getTagOptions = async () => {
         const response = await axios.get(`${baseURL}/tags`);
@@ -25,9 +29,12 @@ export function Tags(): JSX.Element {
         getTagOptions();
     }, []);
 
-    const handleTagChange = (tags: any) => {
+    const handleTagChange = (tags: MultiValue<TagOption>) => {
         const tagsArray = tags.map((t: TagOption) => t.value);
-        setSelectedTags(tagsArray);
+        props.dispatch({
+            type: "update",
+            payload: { key: "tags", value: tagsArray },
+        });
     };
 
     return (

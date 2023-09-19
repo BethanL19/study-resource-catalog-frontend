@@ -41,15 +41,15 @@ type State = {
     recommender_id: string;
     recommender_comment: string;
     recommender_reason: string;
-    tags: string;
+    tags: string[];
 };
 
-type Action =
+export type Action =
     | {
           type: "update";
           payload: {
               key: string;
-              value: string;
+              value: string | string[];
           };
       }
     | { type: "reset" };
@@ -70,7 +70,7 @@ export function AddResource({
         recommender_id: "",
         recommender_comment: "I recommend this resource after having used it",
         recommender_reason: "",
-        tags: "",
+        tags: [],
     };
     const reducer = (state: State, action: Action) => {
         switch (action.type) {
@@ -294,7 +294,7 @@ export function AddResource({
                             </FormControl>
                         ))}
 
-                        <Tags />
+                        <Tags dispatch={dispatch} />
 
                         {dropDownFields.map((field) => (
                             <FormControl key={field.key} mb="5">

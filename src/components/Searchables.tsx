@@ -40,7 +40,7 @@ export function Searchables(props: SearchableProps): JSX.Element {
             handleSearchResources();
         },
         // eslint-disable-next-line
-        [searchableTags, typedSearch, clickedTags]
+        [searchableTags, typedSearch, clickedTags, props.resources]
     );
 
     const handleSearch = (searchWord: string) => {

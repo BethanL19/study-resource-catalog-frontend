@@ -42,6 +42,7 @@ export interface ResourceComponentProps {
     user_id: number;
     showResourcesPage: boolean;
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
+    currentPage: number;
 }
 
 export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
@@ -84,7 +85,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
 
         await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
         if (props.showResourcesPage) {
-            getResources(props.setResources);
+            getResources(props.setResources, props.currentPage);
         } else {
             getStudyList(props.setResources, props.user_id);
         }
@@ -97,7 +98,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
 
         await axios.put(`${baseURL}/resources/dislike/${props.resource.id}`);
         if (props.showResourcesPage) {
-            getResources(props.setResources);
+            getResources(props.setResources, props.currentPage);
         } else {
             getStudyList(props.setResources, props.user_id);
         }

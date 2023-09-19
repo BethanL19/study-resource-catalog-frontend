@@ -131,7 +131,7 @@ export function AddResource({
 
             dispatch({ type: "reset" });
 
-            getResources(setResources);
+            getResources(setResources, 1);
         } catch (error) {
             console.error(error);
             interface ServerError {

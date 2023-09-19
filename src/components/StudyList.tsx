@@ -8,27 +8,34 @@ interface StudyListProps {
     userId: number;
     showResourcesPage: boolean;
     setShowResourcesPage: React.Dispatch<React.SetStateAction<boolean>>;
+    currentPage: number;
 }
 
-export function StudyList(props: StudyListProps): JSX.Element {
+export function StudyList({
+    userId,
+    showResourcesPage,
+    setShowResourcesPage,
+    currentPage,
+}: StudyListProps): JSX.Element {
     const [studyList, setStudyList] = useState<Resource[]>([]);
     const [searchedStudyList, setSearchedStudyList] = useState<Resource[]>([]);
 
     useEffect(() => {
-        getStudyList(setStudyList, props.userId);
-    }, [props.userId]);
+        getStudyList(setStudyList, userId);
+    }, [userId]);
 
     const handleResourcesPage = () => {
-        props.setShowResourcesPage(true);
+        setShowResourcesPage(true);
     };
 
     const studyResources = searchedStudyList.map((r, index) => (
         <ResourceComponent
             key={index}
             resource={r}
-            user_id={props.userId}
-            showResourcesPage={props.showResourcesPage}
+            user_id={userId}
+            showResourcesPage={showResourcesPage}
             setResources={setStudyList}
+            currentPage={currentPage}
         />
     ));
 

@@ -24,6 +24,7 @@ import { getResources } from "../utils/getResources";
 import { Resource } from "./Resource";
 import showToast from "../utils/showToast";
 import { sendDiscordNotification } from "../utils/sendDiscordNotification";
+import { Tags } from "./Tags";
 
 interface AddResourceProps {
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
@@ -212,13 +213,13 @@ export function AddResource({
             value: resource.description,
             isRequired: true,
         },
-        {
-            label: "Tags (separated by commas)",
-            key: "tags",
-            placeholder: "React,TypeScript,JavaScript",
-            value: resource.tags,
-            isRequired: true,
-        },
+        // {
+        //     label: "Tags (separated by commas)",
+        //     key: "tags",
+        //     placeholder: "React,TypeScript,JavaScript",
+        //     value: resource.tags,
+        //     isRequired: true,
+        // },
         {
             label: "Build phase",
             key: "build_phase",
@@ -292,6 +293,8 @@ export function AddResource({
                                 />
                             </FormControl>
                         ))}
+
+                        <Tags />
 
                         {dropDownFields.map((field) => (
                             <FormControl key={field.key} mb="5">

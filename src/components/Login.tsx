@@ -26,15 +26,20 @@ export function Login(props: LoginProps): JSX.Element {
         getUsers();
     }, []);
 
+    const user = users.find((user) => user.id === selectedUserId) as User;
     const handleLogin = () => {
         props.setUserId(selectedUserId);
-        showToast("Welcome!", "You've been logged in.", "success");
+        showToast(
+            `Welcome ${user.name} 👋`,
+            "You've been logged in.",
+            "success"
+        );
     };
     const handleLogout = () => {
         props.setUserId(0);
         setSelectedUserId(0);
         props.setShowResourcesPage(true);
-        showToast("Bye now!", "You've been logged out.", "success");
+        showToast(`Bye ${user.name} 👋`, "You've been logged out.", "success");
     };
 
     return (

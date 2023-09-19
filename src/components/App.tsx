@@ -4,6 +4,7 @@ import { ResourcesPage } from "./ResourcesPage";
 import { ChakraProvider } from "@chakra-ui/react";
 import { StudyList } from "./StudyList";
 import { Login } from "./Login";
+import { Footer } from "./Footer";
 
 function App() {
     const [showResourcesPage, setShowResourcesPage] = useState<boolean>(true);
@@ -28,6 +29,7 @@ function App() {
                     setShowResourcesPage={setShowResourcesPage}
                 />
             )}
+            <Footer />
         </ChakraProvider>
     );
 }

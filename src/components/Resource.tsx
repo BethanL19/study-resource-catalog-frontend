@@ -182,7 +182,9 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                         <ListItem>{`recommender comment: ${props.resource.recommender_comment}`}</ListItem>
                         <ListItem>{`recommender reason: ${props.resource.recommender_reason}`}</ListItem>
                         <ListItem>{`content type: ${props.resource.content_type}`}</ListItem>
-                        <ListItem>{`recommended for week ${props.resource.build_phase}`}</ListItem>
+                        {props.resource.build_phase && (
+                            <ListItem>{`recommended for week ${props.resource.build_phase}`}</ListItem>
+                        )}
                     </UnorderedList>
                 </AccordionPanel>
             </AccordionItem>

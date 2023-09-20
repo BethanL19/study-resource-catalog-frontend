@@ -8,12 +8,9 @@ export async function getResources(
     typedSearch: string,
     searchTags: string[]
 ) {
-    const response = await axios.get(`${baseURL}/resources/filter/pages`, {
-        params: {
-            typedSearch: typedSearch,
-            searchTags: searchTags,
-            currentPage,
-        },
-    });
+    const response = await axios.get(
+        `${baseURL}/resources/filter/pages/${currentPage}`,
+        { params: { typedSearch: typedSearch, searchTags: searchTags } }
+    );
     setResources(response.data);
 }

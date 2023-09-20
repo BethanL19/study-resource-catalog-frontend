@@ -1,8 +1,5 @@
 import {
     Button,
-    FormControl,
-    FormLabel,
-    Input,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -10,27 +7,26 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    Radio,
-    RadioGroup,
-    Select,
-    Stack,
     Text,
     useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { baseURL } from "../config";
 import { getResources } from "../utils/getResources";
 import { Resource } from "./Resource";
 import showToast from "../utils/showToast";
 import { sendDiscordNotification } from "../utils/sendDiscordNotification";
+import { Tag } from "./Searchables";
+import isRequiredEmpty from "../utils/isRequiredEmpty";
+import FormFields from "./FormFields";
 
 interface AddResourceProps {
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
     userId: number;
 }
 
-type State = {
+export type IResource = {
     resource_name: string;
     author_name: string;
     url: string;
@@ -40,24 +36,43 @@ type State = {
     recommender_id: string;
     recommender_comment: string;
     recommender_reason: string;
-    tags: string;
+    tags: string[];
 };
 
-type Action =
+export type Action =
     | {
           type: "update";
           payload: {
               key: string;
-              value: string;
+              value: string | string[];
           };
       }
     | { type: "reset" };
+
+export interface TagOption {
+    value: string;
+    label: string;
+}
 
 export function AddResource({
     setResources,
     userId,
 }: AddResourceProps): JSX.Element {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
+
+    const getTagOptions = async () => {
+        const response = await axios.get(`${baseURL}/tags`);
+        const tagOptions = response.data.map((t: Tag) => ({
+            value: t.tag,
+            label: t.tag,
+        }));
+        setTagsOptions(tagOptions);
+    };
+
+    useEffect(() => {
+        getTagOptions();
+    }, []);
 
     const initialState = {
         resource_name: "",
@@ -69,9 +84,10 @@ export function AddResource({
         recommender_id: "",
         recommender_comment: "I recommend this resource after having used it",
         recommender_reason: "",
-        tags: "",
+        tags: [],
     };
-    const reducer = (state: State, action: Action) => {
+
+    const reducer = (state: IResource, action: Action) => {
         switch (action.type) {
             case "update":
                 return {
@@ -86,6 +102,7 @@ export function AddResource({
     };
 
     const [resource, dispatch] = useReducer(reducer, initialState);
+
     useEffect(() => {
         dispatch({
             type: "update",
@@ -105,12 +122,7 @@ export function AddResource({
     };
 
     const handleSubmit = async () => {
-        const allFields = textInputFields.concat(dropDownFields);
-        const emptyFields = allFields.filter((field) => {
-            return field.isRequired && field.value.length === 0;
-        });
-
-        if (emptyFields.length > 0) {
+        if (isRequiredEmpty(resource)) {
             showToast(
                 "Empty fields",
                 "Please make sure you populate all the required fields",
@@ -137,17 +149,7 @@ export function AddResource({
             interface ServerError {
                 response: {
                     data: {
-                        length: number;
-                        name: string;
-                        severity: string;
                         code: string;
-                        detail: string;
-                        schema: string;
-                        table: string;
-                        constraint: string;
-                        file: string;
-                        line: string;
-                        routine: string;
                     };
                 };
             }
@@ -165,94 +167,6 @@ export function AddResource({
         }
     };
 
-    interface IInputField {
-        label: string;
-        key: string;
-        placeholder?: string;
-        value: string;
-        isRequired: boolean;
-    }
-
-    // This is in an array so that it can be defined in one place, and then used both in empty space validation and creating a Select element.
-    const dropDownFields: IInputField[] = [
-        {
-            label: "Content type",
-            key: "content_type",
-            value: resource.content_type,
-            isRequired: true,
-        },
-    ];
-
-    const textInputFields: IInputField[] = [
-        {
-            label: "Resource name",
-            key: "resource_name",
-            placeholder: "Provide a name",
-            value: resource.resource_name,
-            isRequired: true,
-        },
-        {
-            label: "Author name",
-            key: "author_name",
-            placeholder: "Who created it?",
-            value: resource.author_name,
-            isRequired: true,
-        },
-        {
-            label: "URL",
-            key: "url",
-            placeholder: "https://google.com",
-            value: resource.url,
-            isRequired: true,
-        },
-        {
-            label: "Description",
-            key: "description",
-            placeholder: "Describe this resource...",
-            value: resource.description,
-            isRequired: true,
-        },
-        {
-            label: "Tags (separated by commas)",
-            key: "tags",
-            placeholder: "React,TypeScript,JavaScript",
-            value: resource.tags,
-            isRequired: true,
-        },
-        {
-            label: "Build phase",
-            key: "build_phase",
-            placeholder: "0",
-            value: resource.build_phase,
-            isRequired: false,
-        },
-        {
-            label: "Reason",
-            key: "recommender_reason",
-            placeholder: "What do you think about this resource?",
-            value: resource.recommender_reason,
-            isRequired: false,
-        },
-    ];
-
-    const contentTypes = [
-        "video",
-        "article",
-        "ebook",
-        "podcast",
-        "exercise",
-        "exercise set",
-        "software tool",
-        "course",
-        "diagram",
-        "cheat-sheet",
-        "reference",
-        "resource list",
-        "youtube channel",
-        "organisation",
-        "other",
-    ];
-
     return (
         <>
             <Button onClick={handleAddResourceClick} colorScheme="green">
@@ -265,100 +179,11 @@ export function AddResource({
                     <ModalHeader>Add a new resource</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
-                        {textInputFields.map((field) => (
-                            <FormControl key={field.key}>
-                                <FormLabel>
-                                    {field.isRequired && "* "}
-                                    {field.label}
-                                </FormLabel>
-                                <Input
-                                    mb="5"
-                                    borderColor={
-                                        field.isRequired && field.value === ""
-                                            ? "red"
-                                            : "inherit"
-                                    }
-                                    placeholder={field.placeholder}
-                                    value={field.value}
-                                    onChange={(event) =>
-                                        dispatch({
-                                            type: "update",
-                                            payload: {
-                                                key: field.key,
-                                                value: event.target.value,
-                                            },
-                                        })
-                                    }
-                                />
-                            </FormControl>
-                        ))}
-
-                        {dropDownFields.map((field) => (
-                            <FormControl key={field.key} mb="5">
-                                <FormLabel>
-                                    {field.isRequired && "* "}
-                                    {field.label}
-                                </FormLabel>
-                                <Select
-                                    borderColor={
-                                        field.isRequired && field.value === ""
-                                            ? "red"
-                                            : "inherit"
-                                    }
-                                    value={field.value}
-                                    onChange={(event) =>
-                                        dispatch({
-                                            type: "update",
-                                            payload: {
-                                                key: "content_type",
-                                                value: event.target.value,
-                                            },
-                                        })
-                                    }
-                                >
-                                    <option value="" disabled>
-                                        Select content type
-                                    </option>
-                                    {contentTypes.map((type) => (
-                                        <option key={type} value={type}>
-                                            {type}
-                                        </option>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        ))}
-
-                        <FormControl mb="5">
-                            <FormLabel>* Verdict</FormLabel>
-                            <RadioGroup
-                                mb="5"
-                                onChange={(value) =>
-                                    dispatch({
-                                        type: "update",
-                                        payload: {
-                                            key: "recommender_comment",
-                                            value,
-                                        },
-                                    })
-                                }
-                                value={resource.recommender_comment}
-                            >
-                                <Stack direction="column">
-                                    <Radio value="I recommend this resource after having used it">
-                                        I recommend this resource after having
-                                        used it
-                                    </Radio>
-                                    <Radio value="I do not recommend this resource, having used it">
-                                        I do not recommend this resource, having
-                                        used it
-                                    </Radio>
-                                    <Radio value="I haven't used this resource but it looks promising">
-                                        I haven't used this resource but it
-                                        looks promising
-                                    </Radio>
-                                </Stack>
-                            </RadioGroup>
-                        </FormControl>
+                        <FormFields
+                            dispatch={dispatch}
+                            resource={resource}
+                            tagsOptions={tagsOptions}
+                        />
 
                         <Text>(* Required)</Text>
                     </ModalBody>

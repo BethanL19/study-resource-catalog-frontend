@@ -2,6 +2,7 @@ import { Input, Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
 import CreatableSelect from "react-select/creatable";
 import { Action, IResource, TagOption } from "./AddResource";
 import { IInputField } from "./FormFields";
+import { convertToLowerCase } from "../utils/convertToLowerCase";
 
 interface InputFieldProps {
     field: IInputField;
@@ -34,7 +35,8 @@ export default function InputField({
         "other",
     ];
 
-    const handleInput = (value: string | string[], field: IInputField) =>
+    const handleInput = (value: string | string[], field: IInputField) => {
+        console.log(value);
         dispatch({
             type: "update",
             payload: {
@@ -42,6 +44,7 @@ export default function InputField({
                 value: value,
             },
         });
+    };
 
     const getInputField = () => {
         switch (field.type) {
@@ -100,7 +103,9 @@ export default function InputField({
                         options={tagsOptions}
                         onChange={(event) =>
                             handleInput(
-                                event.map((t: TagOption) => t.value),
+                                convertToLowerCase(
+                                    event.map((t: TagOption) => t.value)
+                                ),
                                 field
                             )
                         }

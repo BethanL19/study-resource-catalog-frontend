@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { getSearchableTags } from "../utils/getSearchableTags";
 import { Button } from "@chakra-ui/react";
-import { searchResources } from "../utils/searchResources";
-import { filterResourceTags } from "../utils/filterResourceTags";
 import { Resource } from "./Resource";
 
 export interface Tag {
@@ -10,49 +8,29 @@ export interface Tag {
 }
 interface SearchableProps {
     resources: Resource[];
-    setSearchedResources: React.Dispatch<React.SetStateAction<Resource[]>>;
+    typedSearch: string;
+    setTypedSearch: React.Dispatch<React.SetStateAction<string>>;
+    clickedTags: string[];
+    setClickedTags: React.Dispatch<React.SetStateAction<string[]>>;
+    noResults:boolean
 }
 export function Searchables(props: SearchableProps): JSX.Element {
     const [searchableTags, setSearchableTags] = useState<Tag[]>([]);
-    const [typedSearch, setTypedSearch] = useState("");
-    const [clickedTags, setClickedTags] = useState<string[]>([]);
-    const [noResults, setNoResults] = useState(false);
 
     useEffect(() => {
         getSearchableTags(setSearchableTags);
     }, []);
 
-    const handleSearchResources = () => {
-        const filteredResources = searchResources(
-            typedSearch,
-            filterResourceTags(clickedTags, props.resources)
-        );
-        if (filteredResources.length === 0) {
-            setNoResults(true);
-        } else {
-            setNoResults(false);
-        }
-        props.setSearchedResources(filteredResources);
-    };
-
-    useEffect(
-        () => {
-            handleSearchResources();
-        },
-        // eslint-disable-next-line
-        [searchableTags, typedSearch, clickedTags, props.resources]
-    );
-
     const handleSearch = (searchWord: string) => {
-        setTypedSearch(searchWord);
+        props.setTypedSearch(searchWord);
     };
 
     const handleTagClick = (tag: string) => {
-        if (!clickedTags.includes(tag)) {
-            setClickedTags([...clickedTags, tag]);
+        if (!props.clickedTags.includes(tag)) {
+            props.setClickedTags([...props.clickedTags, tag]);
         } else {
-            setClickedTags(
-                clickedTags.filter((clickedTag) => clickedTag !== tag)
+            props.setClickedTags(
+                props.clickedTags.filter((clickedTag) => clickedTag !== tag)
             );
         }
     };
@@ -60,7 +38,7 @@ export function Searchables(props: SearchableProps): JSX.Element {
     const searchTags = searchableTags.map((t, index) => (
         <Button
             key={index}
-            colorScheme={clickedTags.includes(t.tag) ? "pink" : "teal"}
+            colorScheme={props.clickedTags.includes(t.tag) ? "pink" : "teal"}
             onClick={() => {
                 handleTagClick(t.tag);
             }}
@@ -74,7 +52,7 @@ export function Searchables(props: SearchableProps): JSX.Element {
             <input
                 className="searchBar"
                 placeholder="Search..."
-                value={typedSearch}
+                value={props.typedSearch}
                 onChange={(event) => {
                     handleSearch(event.target.value);
                 }}
@@ -82,7 +60,7 @@ export function Searchables(props: SearchableProps): JSX.Element {
             <div className="searchTags">
                 {searchTags}
                 <div className="no-results">
-                    {noResults && "no results found"}
+                    {props.noResults && "no results found"}
                 </div>
             </div>
         </div>

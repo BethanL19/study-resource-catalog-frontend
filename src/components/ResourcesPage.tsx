@@ -23,13 +23,20 @@ export function ResourcesPage({
     currentPage,
 }: ResourcePageProps): JSX.Element {
     const [resources, setResources] = useState<Resource[]>([]);
-    const [searchedResources, setSearchedResources] = useState<Resource[]>([]);
     const [numOfPages, setNumOfPages] = useState(1);
+    const [typedSearch, setTypedSearch] = useState("");
+    const [clickedTags, setClickedTags] = useState<string[]>([]);
+    const [noResults, setNoResults] = useState(false);
 
     useEffect(() => {
         getNumOfPages(setNumOfPages);
-        getResources(setResources, currentPage);
-    }, [currentPage]);
+        getResources(setResources, currentPage, typedSearch, clickedTags);
+        if (resources.length === 0) {
+            setNoResults(true);
+        } else {
+            setNoResults(false);
+        }
+    }, [currentPage, typedSearch, clickedTags, resources]);
 
     const handleStudyListPage = () => {
         if (userId === 0) {
@@ -43,7 +50,7 @@ export function ResourcesPage({
         setShowResourcesPage(false);
     };
 
-    const resourcesForRender = searchedResources.map((r, index) => (
+    const resourcesForRender = resources.map((r, index) => (
         <ResourceComponent
             key={index}
             resource={r}
@@ -55,9 +62,8 @@ export function ResourcesPage({
     ));
 
     const handlePageChange = (page: string) => {
-        console.log("Hiya buddy");
         setCurrentPage(parseInt(page));
-        getResources(setResources, currentPage);
+        getResources(setResources, currentPage, typedSearch, clickedTags);
     };
 
     const pageButtons: JSX.Element[] = [];
@@ -86,7 +92,11 @@ export function ResourcesPage({
                 </div>
                 <Searchables
                     resources={resources}
-                    setSearchedResources={setSearchedResources}
+                    typedSearch={typedSearch}
+                    setTypedSearch={setTypedSearch}
+                    clickedTags={clickedTags}
+                    setClickedTags={setClickedTags}
+                    noResults={noResults}
                 />
             </div>
             <div className="resources">{resourcesForRender}</div>

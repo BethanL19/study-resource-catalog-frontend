@@ -41,7 +41,7 @@ export function StudyList({
 
     return (
         <div>
-            <div>
+            {/* <div>
                 <div className="nav-button">
                     <Button onClick={handleResourcesPage}>
                         Back to all resources
@@ -52,7 +52,7 @@ export function StudyList({
                     setSearchedResources={setSearchedStudyList}
                 />
             </div>
-            <div className="resources">{studyResources}</div>
+            <div className="resources">{studyResources}</div> */}
         </div>
     );
 }

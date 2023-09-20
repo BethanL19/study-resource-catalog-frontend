@@ -4,12 +4,16 @@ import axios from "axios";
 
 export async function getResources(
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>,
-    currentPage: number
+    currentPage: number,
+    typedSearch: string,
+    searchTags: string[]
 ) {
-    // const response = await axios.get(`${baseURL}/resources`);
-    // setResources(response.data);
-    const response = await axios.get(
-        `${baseURL}/resources/pages/${currentPage}`
-    );
+    const response = await axios.get(`${baseURL}/resources/filter/pages`, {
+        params: {
+            typedSearch: typedSearch,
+            searchTags: searchTags,
+            currentPage,
+        },
+    });
     setResources(response.data);
 }

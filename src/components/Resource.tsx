@@ -85,7 +85,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
 
         await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
         if (props.showResourcesPage) {
-            getResources(props.setResources, props.currentPage);
+            getResources(props.setResources, props.currentPage,"%%",[]);
         } else {
             getStudyList(props.setResources, props.user_id);
         }
@@ -98,7 +98,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
 
         await axios.put(`${baseURL}/resources/dislike/${props.resource.id}`);
         if (props.showResourcesPage) {
-            getResources(props.setResources, props.currentPage);
+            getResources(props.setResources, props.currentPage,"%%",[]);
         } else {
             getStudyList(props.setResources, props.user_id);
         }

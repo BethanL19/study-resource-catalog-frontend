@@ -13,7 +13,7 @@ interface User {
 interface LoginProps {
     userId: number;
     setUserId: React.Dispatch<React.SetStateAction<number>>;
-    setShowResourcesPage: React.Dispatch<React.SetStateAction<boolean>>;
+    setListType: React.Dispatch<React.SetStateAction<"browse" | "studyList">>;
 }
 export function Login(props: LoginProps): JSX.Element {
     const [users, setUsers] = useState<User[]>([]);
@@ -38,7 +38,7 @@ export function Login(props: LoginProps): JSX.Element {
     const handleLogout = () => {
         props.setUserId(0);
         setSelectedUserId(0);
-        props.setShowResourcesPage(true);
+        props.setListType("browse");
         showToast(`Bye ${user.name} 👋`, "You've been logged out.", "success");
     };
 

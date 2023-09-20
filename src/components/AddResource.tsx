@@ -28,6 +28,7 @@ import { sendDiscordNotification } from "../utils/sendDiscordNotification";
 interface AddResourceProps {
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
     userId: number;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type State = {
@@ -56,6 +57,7 @@ type Action =
 export function AddResource({
     setResources,
     userId,
+    setLoading,
 }: AddResourceProps): JSX.Element {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -131,7 +133,7 @@ export function AddResource({
 
             dispatch({ type: "reset" });
 
-            getResources(setResources, 1, "%%", []);
+            getResources(setResources, 1, "%%", [], userId, setLoading);
         } catch (error) {
             console.error(error);
             interface ServerError {

@@ -213,11 +213,18 @@ export function AddResource({
             isRequired: true,
         },
         {
+            label: "Tags (separated by commas)",
+            key: "tags",
+            placeholder: "React,TypeScript,JavaScript",
+            value: resource.tags,
+            isRequired: true,
+        },
+        {
             label: "Build phase",
             key: "build_phase",
             placeholder: "0",
             value: resource.build_phase,
-            isRequired: true,
+            isRequired: false,
         },
         {
             label: "Reason",
@@ -225,13 +232,6 @@ export function AddResource({
             placeholder: "What do you think about this resource?",
             value: resource.recommender_reason,
             isRequired: false,
-        },
-        {
-            label: "Tags (separated by commas)",
-            key: "tags",
-            placeholder: "React,TypeScript,JavaScript",
-            value: resource.tags,
-            isRequired: true,
         },
     ];
 

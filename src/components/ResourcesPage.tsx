@@ -19,7 +19,6 @@ export function ResourcesPage(props: ResourcePageProps): JSX.Element {
     useEffect(() => {
         getResources(setResources);
     }, []);
-    console.log(resources);
 
     const handleStudyListPage = () => {
         if (props.userId === 0) {

@@ -54,12 +54,20 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
             );
             return;
         }
-
-        await axios.post(
-            `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
-        );
-        showToast("Done!", "Added to your study list", "success");
+        try {
+            const response = await axios.post(
+                `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
+            );
+            if (response.data.success) {
+                showToast("Done!", response.data.message, "success");
+            } else {
+                showToast("Duplicate!", response.data.message, "error");
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
+
     const deleteFromStudyList = async () => {
         await axios.delete(
             `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
@@ -182,7 +190,9 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                         <ListItem>{`recommender comment: ${props.resource.recommender_comment}`}</ListItem>
                         <ListItem>{`recommender reason: ${props.resource.recommender_reason}`}</ListItem>
                         <ListItem>{`content type: ${props.resource.content_type}`}</ListItem>
-                        <ListItem>{`recommended for week ${props.resource.build_phase}`}</ListItem>
+                        {props.resource.build_phase && (
+                            <ListItem>{`recommended for week ${props.resource.build_phase}`}</ListItem>
+                        )}
                     </UnorderedList>
                 </AccordionPanel>
             </AccordionItem>

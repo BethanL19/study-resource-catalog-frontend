@@ -15,12 +15,15 @@ describe("Test the request body of posting a resource", () => {
         cy.contains("Description").type(
             "How to start testing a new project in Cypress."
         );
+        cy.get('option[value="article"]').parent().select("article");
+        cy.contains("Select...")
+            .parent()
+            .click()
+            .type("react{enter}e2e{enter}");
         cy.contains("Build phase").type("12");
         cy.contains("Reason").type(
             "This helped us a lot when setting up our first E2E test"
         );
-        cy.contains("Tags (separated by commas)").type("React");
-        cy.get('option[value="article"]').parent().select("article");
         cy.get('input[value="I recommend this resource after having used it"]')
             .parent()
             .click();

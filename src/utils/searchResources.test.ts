@@ -90,8 +90,8 @@ const filteredResources = [
         recommender_name: "Tomasz",
     },
 ];
-test("filter resource tages", () => {
-    expect(searchResources("Java", resourcesToFilter)).toStrictEqual(
+test("filter resource by typed search", () => {
+    expect(searchResources("jav", resourcesToFilter)).toStrictEqual(
         filteredResources
     );
 });

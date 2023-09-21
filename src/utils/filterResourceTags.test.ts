@@ -32,7 +32,7 @@ const resourcesToFilter = [
         recommender_reason: "",
         likes_count: 0,
         dislikes_count: 0,
-        tags: ["react"],
+        tags: ["react", "css"],
         recommender_name: "Tomasz",
     },
     {
@@ -170,7 +170,7 @@ const filteredResources = [
         recommender_reason: "",
         likes_count: 0,
         dislikes_count: 0,
-        tags: ["react"],
+        tags: ["react", "css"],
         recommender_name: "Tomasz",
     },
 
@@ -227,8 +227,8 @@ const filteredResources = [
         recommender_name: "Tomasz",
     },
 ];
-test("filter resource tages", () => {
-    expect(filterResourceTags(["react"], resourcesToFilter)).toStrictEqual(
-        filteredResources
-    );
+test("filter resources by selected tags", () => {
+    expect(
+        filterResourceTags(["react", "css"], resourcesToFilter)
+    ).toStrictEqual(filteredResources);
 });

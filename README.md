@@ -31,8 +31,7 @@ yarn start
 
 It will also ask your browser to open a tab to `http://localhost:3000/`
 
-Any type-check and linting errors will appear in the browser and in the terminal output as you browse.
+Any type-check and linting errors will appear in the browser and in the terminal output as you browse
 
-## Environment Variables
+In order for the front-end to run locally the back-end must also be running locally
 
-Set up the `bastURL` variable with your backend server link

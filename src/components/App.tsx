@@ -1,34 +1,29 @@
+import { ChakraProvider } from "@chakra-ui/react";
 import { useState } from "react";
 import "./App.css";
-import { ResourcesPage } from "./ResourcesPage";
-import { ChakraProvider } from "@chakra-ui/react";
-import { StudyList } from "./StudyList";
-import { Login } from "./Login";
 import { Footer } from "./Footer";
+import { Login } from "./Login";
+import { ResourceList } from "./ResourceList";
 
 function App() {
-    const [showResourcesPage, setShowResourcesPage] = useState<boolean>(true);
+    const [listType, setListType] = useState<"browse" | "studyList">("browse");
     const [userId, setUserId] = useState<number>(0);
+    const [currentPage, setCurrentPage] = useState(1);
+
     return (
         <ChakraProvider>
             <Login
                 userId={userId}
                 setUserId={setUserId}
-                setShowResourcesPage={setShowResourcesPage}
+                setListType={setListType}
             />
-            {showResourcesPage ? (
-                <ResourcesPage
-                    userId={userId}
-                    showResourcesPage={showResourcesPage}
-                    setShowResourcesPage={setShowResourcesPage}
-                />
-            ) : (
-                <StudyList
-                    showResourcesPage={showResourcesPage}
-                    userId={userId}
-                    setShowResourcesPage={setShowResourcesPage}
-                />
-            )}
+            <ResourceList
+                listType={listType}
+                userId={userId}
+                setListType={setListType}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+            />
             <Footer />
         </ChakraProvider>
     );

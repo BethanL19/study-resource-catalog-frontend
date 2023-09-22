@@ -1,22 +1,22 @@
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
-    Box,
-    Heading,
-    Button,
-    Link,
-    Text,
     Accordion,
-    AccordionItem,
     AccordionButton,
     AccordionIcon,
+    AccordionItem,
     AccordionPanel,
-    UnorderedList,
+    Box,
+    Button,
+    Heading,
+    Link,
     ListItem,
+    Text,
+    UnorderedList,
 } from "@chakra-ui/react";
-import { baseURL } from "../config";
 import axios from "axios";
+import { baseURL } from "../config";
+import { getNumOfPages } from "../utils/getNumOfPages";
 import { getResources } from "../utils/getResources";
-import { getStudyList } from "../utils/getStudyList";
 import showToast from "../utils/showToast";
 
 export interface Resource {
@@ -39,14 +39,29 @@ export interface Resource {
 
 export interface ResourceComponentProps {
     resource: Resource;
-    user_id: number;
-    showResourcesPage: boolean;
+    userId: number;
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
+    currentPage: number;
+    setNumOfPages: React.Dispatch<React.SetStateAction<number>>;
+    typedSearch: string;
+    clickedTags: string[];
+    listType: "browse" | "studyList";
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
+export function ResourceComponent({
+    resource,
+    userId,
+    setResources,
+    currentPage,
+    setNumOfPages,
+    typedSearch,
+    clickedTags,
+    listType,
+    setLoading,
+}: ResourceComponentProps): JSX.Element {
     const addToStudyList = async () => {
-        if (props.user_id === 0) {
+        if (userId === 0) {
             showToast(
                 "Not logged in!",
                 "Log in to access your study list",
@@ -56,7 +71,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
         }
         try {
             const response = await axios.post(
-                `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
+                `${baseURL}/study_list/${userId}/${resource.id}`
             );
             if (response.data.success) {
                 showToast("Done!", response.data.message, "success");
@@ -69,61 +84,77 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
     };
 
     const deleteFromStudyList = async () => {
-        await axios.delete(
-            `${baseURL}/study_list/${props.user_id}/${props.resource.id}`
-        );
+        await axios.delete(`${baseURL}/study_list/${userId}/${resource.id}`);
         showToast("Done!", "Removed from your study list", "success");
-        getStudyList(props.setResources, props.user_id);
+        getNumOfPages(
+            setNumOfPages,
+            typedSearch,
+            clickedTags,
+            listType === "browse" ? 0 : userId
+        );
+        getResources(
+            setResources,
+            currentPage,
+            typedSearch,
+            clickedTags,
+            listType === "browse" ? 0 : userId,
+            setLoading
+        );
     };
 
     const likeResource = async () => {
-        if (props.user_id === 0) {
+        if (userId === 0) {
             showToast("Not logged in!", "Log in to vote on resources", "error");
             return;
         }
 
-        await axios.put(`${baseURL}/resources/like/${props.resource.id}`);
-        if (props.showResourcesPage) {
-            getResources(props.setResources);
-        } else {
-            getStudyList(props.setResources, props.user_id);
-        }
+        await axios.put(`${baseURL}/resources/like/${resource.id}`);
+
+        getResources(
+            setResources,
+            currentPage,
+            typedSearch,
+            clickedTags,
+            listType === "browse" ? 0 : userId,
+            setLoading
+        );
     };
     const dislikeResource = async () => {
-        if (props.user_id === 0) {
+        if (userId === 0) {
             showToast("Not logged in!", "Log in to vote on resources", "error");
             return;
         }
 
-        await axios.put(`${baseURL}/resources/dislike/${props.resource.id}`);
-        if (props.showResourcesPage) {
-            getResources(props.setResources);
-        } else {
-            getStudyList(props.setResources, props.user_id);
-        }
+        await axios.put(`${baseURL}/resources/dislike/${resource.id}`);
+        getResources(
+            setResources,
+            currentPage,
+            typedSearch,
+            clickedTags,
+            listType === "browse" ? 0 : userId,
+            setLoading
+        );
     };
 
     return (
         <Accordion allowMultiple className="resource-card">
             <div className="resource">
                 <Heading size={"lg"} className="resource-title">
-                    {props.resource.resource_name}
+                    {resource.resource_name}
                 </Heading>
                 <div className="resource-info">
                     <div className="r-header">
-                        <Link href={props.resource.url} isExternal>
+                        <Link href={resource.url} isExternal>
                             link <ExternalLinkIcon mx="1vw" />
                         </Link>
                         <Heading
                             size={"md"}
-                        >{`added by: ${props.resource.recommender_name}`}</Heading>
+                        >{`added by: ${resource.recommender_name}`}</Heading>
                     </div>
                     <Heading
                         size={"md"}
-                    >{`by ${props.resource.author_name}`}</Heading>
-                    <Text className="description">
-                        {props.resource.description}
-                    </Text>
+                    >{`by ${resource.author_name}`}</Heading>
+                    <Text className="description">{resource.description}</Text>
                 </div>
                 <Box className="buttons-box">
                     <Box className="likes">
@@ -136,7 +167,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                         </Button>
                         <Text
                             marginLeft={"0.5vw"}
-                        >{`Likes ${props.resource.likes_count}`}</Text>
+                        >{`Likes ${resource.likes_count}`}</Text>
                     </Box>
                     <Box className="dislikes">
                         <Button
@@ -148,9 +179,9 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                         </Button>
                         <Text
                             marginLeft={"0.5vw"}
-                        >{`Dislikes ${props.resource.dislikes_count}`}</Text>
+                        >{`Dislikes ${resource.dislikes_count}`}</Text>
                     </Box>
-                    {props.showResourcesPage ? (
+                    {listType === "browse" ? (
                         <Button
                             colorScheme="teal"
                             onClick={() => {
@@ -171,7 +202,7 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                     )}
                 </Box>
                 <div className="tags">
-                    {props.resource.tags.map((tag, index) => (
+                    {resource.tags.map((tag, index) => (
                         <Button key={index}>{tag}</Button>
                     ))}
                 </div>
@@ -183,15 +214,15 @@ export function ResourceComponent(props: ResourceComponentProps): JSX.Element {
                 </AccordionButton>
                 <AccordionPanel>
                     <UnorderedList>
-                        <ListItem>{`date added: ${props.resource.date_added.slice(
+                        <ListItem>{`date added: ${resource.date_added.slice(
                             0,
                             10
                         )}`}</ListItem>
-                        <ListItem>{`recommender comment: ${props.resource.recommender_comment}`}</ListItem>
-                        <ListItem>{`recommender reason: ${props.resource.recommender_reason}`}</ListItem>
-                        <ListItem>{`content type: ${props.resource.content_type}`}</ListItem>
-                        {props.resource.build_phase && (
-                            <ListItem>{`recommended for week ${props.resource.build_phase}`}</ListItem>
+                        <ListItem>{`recommender comment: ${resource.recommender_comment}`}</ListItem>
+                        <ListItem>{`recommender reason: ${resource.recommender_reason}`}</ListItem>
+                        <ListItem>{`content listType: ${resource.content_type}`}</ListItem>
+                        {resource.build_phase && (
+                            <ListItem>{`recommended for week ${resource.build_phase}`}</ListItem>
                         )}
                     </UnorderedList>
                 </AccordionPanel>

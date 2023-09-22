@@ -24,6 +24,7 @@ import FormFields from "./FormFields";
 interface AddResourceProps {
     setResources: React.Dispatch<React.SetStateAction<Resource[]>>;
     userId: number;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type IResource = {
@@ -57,6 +58,7 @@ export interface TagOption {
 export function AddResource({
     setResources,
     userId,
+    setLoading,
 }: AddResourceProps): JSX.Element {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
@@ -143,7 +145,7 @@ export function AddResource({
 
             dispatch({ type: "reset" });
 
-            getResources(setResources);
+            getResources(setResources, 1, "%%", [], userId, setLoading);
         } catch (error) {
             console.error(error);
             interface ServerError {

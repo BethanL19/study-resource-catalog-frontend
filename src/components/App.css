@@ -96,9 +96,8 @@ html {
     margin-top: 1vw;
     padding: 0.1vw;
 }
-.no-results {
+.list-message {
     text-align: center;
-    margin-right: 22vw;
     margin-top: 1vw;
 }
 .nav-button {

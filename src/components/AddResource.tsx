@@ -16,7 +16,6 @@ import { baseURL } from "../config";
 import { getResources } from "../utils/getResources";
 import { Resource } from "./Resource";
 import showToast from "../utils/showToast";
-import { sendDiscordNotification } from "../utils/sendDiscordNotification";
 import { Tag } from "./Searchables";
 import isRequiredEmpty from "../utils/isRequiredEmpty";
 import FormFields from "./FormFields";
@@ -139,7 +138,6 @@ export function AddResource({
                 "Your resource has been submitted.",
                 "success"
             );
-            await sendDiscordNotification(resource.resource_name, resource.url);
 
             dispatch({ type: "reset" });
 
